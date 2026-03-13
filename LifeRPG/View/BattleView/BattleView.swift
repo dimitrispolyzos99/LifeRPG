@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct BattleView: View {
     @StateObject var battle = BattleViewModel()
     
     var body: some View {
@@ -19,7 +19,7 @@ struct ContentView: View {
                           playerHit: battle.playerHit)
                 .frame(maxWidth: .infinity)
                 
-                EnemyBar(enemyHP: battle.enemyHP,
+                EnemyBar(enemyHP: battle.enemy.hp,
                          enemyHit: battle.enemyHit)
                 .frame(maxWidth: .infinity)
 
@@ -28,7 +28,7 @@ struct ContentView: View {
             
             BattlelogView(battleLog: battle.battleLog)
             
-            BattleField(enemyHit: battle.enemyHit, enemyIsAlive: battle.enemyIsAlive)
+            BattleField(enemyHit: battle.enemyHit, enemyIsAlive: battle.enemy.isAlive)
             
             Spacer()
             
@@ -77,5 +77,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    BattleView()
 }

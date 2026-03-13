@@ -26,23 +26,29 @@ class BattleViewModel: ObservableObject {
     private let holyLightManaCost = 10
     
     
-    @Published var enemyHP = 50
-    @Published var playerHP = 70
+    @Published var player = Player(
+        hp: 70,
+        mana: 20,
+        xp: 0,
+        level: 1
+    )
+    @Published var enemy = Enemy(
+        hp: 50,
+        mana: 10,
+        isAlive: true
+    )
     @Published var battleLog: [String] = ["Battle started"]
-    @Published var xp = 0
-    @Published var level = 1
-    @Published var playerMana = 20
     @Published var enemyHit = false
     @Published var playerHit = false
-    @Published var enemyIsAlive = true
+
     
     var isGameOver: Bool {
-        playerHP == 0
+        player.hp == 0
     }
     
     func attackMurloc(){
             murlocTakesDamage()
-            enemyHP -= basicAttackDamage
+            enemy.hp -= basicAttackDamage
             addLog("Paladin attacks Murloc for 10 dmg")
             resolveEnemyTurn()
         }
@@ -54,19 +60,19 @@ class BattleViewModel: ObservableObject {
         }
     }
     func usePotion() {
-        playerHP = min(playerHP + potionHeal, maxPlayerHP)
+        player.hp = min(player.hp + potionHeal, maxPlayerHP)
         addLog("Paladin used Health Potion")
         enemyAttack()
     }
     private func enemyAttack() {
         playerHit = true
-        playerMana = min(playerMana + manaRegenPerTurn, maxPlayerMana)
+        player.mana = min(player.mana + manaRegenPerTurn, maxPlayerMana)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) {
             self.playerHit = false
         }
-        playerHP = max(playerHP - enemyAttackDamage, 0)
-        if playerHP == 0{
+        player.hp = max(player.hp - enemyAttackDamage, 0)
+        if player.hp == 0{
             addLog("Paladin was defeated")
         } else {
             addLog("Murloc attacked Paladin for 5 dmg")
@@ -80,32 +86,32 @@ class BattleViewModel: ObservableObject {
         }
     }
     func restartBattle(){
-        enemyHP = maxEnemyHP
-        playerHP = maxPlayerHP
-        playerMana = maxPlayerMana
-        enemyIsAlive = true
+        enemy.hp = maxEnemyHP
+        player.hp = maxPlayerHP
+        player.mana = maxPlayerMana
+        enemy.isAlive = true
         enemyHit = false
         playerHit = false
         battleLog = ["Battle restarted"]
     }
     private func respawnEnemy(){
-        enemyIsAlive = true
-        enemyHP = maxEnemyHP
+        enemy.isAlive = true
+        enemy.hp = maxEnemyHP
         addLog("A new Murloc appears")
     }
     
     private func resolveEnemyTurn(){
-        if enemyHP <= 0 {
-            enemyIsAlive = false
-            xp += xpReward
+        if enemy.hp <= 0 {
+            enemy.isAlive = false
+            player.xp += xpReward
             addLog("You killed the Murloc")
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6){
                 self.respawnEnemy()
             }
-            if xp >= levelUpCost * level {
+            if player.xp >= levelUpCost * level {
                 level += 1
-                xp = 0
+                player.xp = 0
                 addLog("Congrats you leveled up")
             }
         } else {
@@ -113,9 +119,9 @@ class BattleViewModel: ObservableObject {
         }
     }
     func holyLight(){
-        if playerMana >= holyLightManaCost{
-            playerMana -= holyLightManaCost
-            playerHP = min(playerHP + holyLightHeal, maxPlayerHP)
+        if player.mana >= holyLightManaCost{
+            player.mana -= holyLightManaCost
+            player.hp = min(playerHP + holyLightHeal, maxPlayerHP)
             addLog("Paladin used holy light and healed for 15 HP")
             enemyAttack()
         }
@@ -124,9 +130,9 @@ class BattleViewModel: ObservableObject {
         }
     }
     func judgement(){
-        if playerMana >= judgementManaCost{
-            playerMana -= judgementManaCost
-            enemyHP -= judgementDamage
+        if player.mana >= judgementManaCost{
+            player.mana -= judgementManaCost
+            enemy.hp -= judgementDamage
             addLog("Paladin used judgement on Murloc")
             murlocTakesDamage()
             resolveEnemyTurn()

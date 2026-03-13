@@ -9,7 +9,7 @@ import SwiftUI
 
 var battleLog: [String] = []
 
-struct Battlelog: View {
+struct BattlelogView: View {
     var battleLog: [String] = []
     var body: some View {
         ScrollViewReader { proxy in
@@ -41,5 +41,5 @@ struct Battlelog: View {
 }
 
 #Preview {
-    Battlelog()
+    BattlelogView()
 }

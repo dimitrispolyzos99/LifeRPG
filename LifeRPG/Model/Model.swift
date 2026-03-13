@@ -6,3 +6,10 @@
 //
 
 import Foundation
+
+struct Player {
+    var hp: Int
+    var mana: Int
+    var xp: Int
+    var level: Int
+}

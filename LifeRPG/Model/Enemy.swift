@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+struct Enemy {
+    var hp: Int
+    var mana: Int
+    var isAlive: Bool
+}

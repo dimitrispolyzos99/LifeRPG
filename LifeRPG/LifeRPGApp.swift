@@ -11,7 +11,7 @@ import SwiftUI
 struct LifeRPGApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainMenuView()
         }
     }
 }
