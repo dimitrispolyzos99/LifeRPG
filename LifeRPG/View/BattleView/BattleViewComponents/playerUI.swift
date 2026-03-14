@@ -8,18 +8,12 @@
 import SwiftUI
 
 
-var playerHP = 70
-var playerMana = 20
-var playerHit = false
-
-
 
 struct PlayerBar : View {
 
-    var playerHP : Int
-    var playerMana : Int
-    var playerHit : Bool
+    @ObservedObject var battle: BattleViewModel
     
+       
     var body: some View {
         VStack(spacing: 10){
             
@@ -27,21 +21,21 @@ struct PlayerBar : View {
             Text("Paladin")
                 .font(.headline)
                 .bold()
-            Text("HP \(playerHP)/70")
+            Text("HP \(battle.player.hp)/70")
                 .font(.caption)
-                ProgressView(value: Double(playerHP), total: 70)
+            ProgressView(value: Double(battle.player.hp), total: 70)
                     .tint(.red)
                     .padding()
                     .frame(height: 6)
-            Text("MP \(playerMana)/20")
+            Text("MP \(battle.player.mana)/20")
                 .font(.caption)
-                ProgressView(value: Double(playerMana), total: 20)
+            ProgressView(value: Double(battle.player.mana), total: 20)
                     .tint(.blue)
                     .padding()
                     .frame(height: 9)
 
         }
-        .background(playerHit ? Color.red.opacity(0.5) : Color.purple.opacity(0.4))
+        .background(battle.playerHit ? Color.red.opacity(0.5) : Color.purple.opacity(0.4))
         .background(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .fill(
@@ -57,18 +51,16 @@ struct PlayerBar : View {
         )
         .cornerRadius(16)
         .padding(10)
-        .offset(x: playerHit ? 6 : 0)
-        .animation(.easeInOut(duration: 0.15), value: playerHit)
+        .offset(x: battle.playerHit ? 6 : 0)
+        .animation(.easeInOut(duration: 0.15), value: battle.playerHit)
     }
     
 }
 
 
 
-
-
-
 #Preview {
-    PlayerBar(playerHP: playerHP, playerMana: playerMana, playerHit: playerHit)
-
+    PlayerBar(battle: BattleViewModel())
 }
+
+

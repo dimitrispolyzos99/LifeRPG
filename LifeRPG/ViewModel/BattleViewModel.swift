@@ -121,7 +121,7 @@ class BattleViewModel: ObservableObject {
     func holyLight(){
         if player.mana >= holyLightManaCost{
             player.mana -= holyLightManaCost
-            player.hp = min(playerHP + holyLightHeal, maxPlayerHP)
+            player.hp = min(player.hp + holyLightHeal, maxPlayerHP)
             addLog("Paladin used holy light and healed for 15 HP")
             enemyAttack()
         }

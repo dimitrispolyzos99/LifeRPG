@@ -16,22 +16,19 @@ struct ActionBar : View {
     let onJudgement: () -> Void
     let onHolyLight: () -> Void
     
-    var xp : Int
-    var level : Int
-    var playerHp: Int
-    var playerMana: Int
-
+    @ObservedObject var battle = BattleViewModel()
+    
     private var isAttackDisabled: Bool {
-        playerHP == 0
+        battle.player.hp == 0
     }
     private var isPotionDisabled: Bool {
-        playerHp == 0
+        battle.player.hp == 0
     }
     private var isJudgementDisabled: Bool {
-        playerMana < 5 || playerHp == 0
+        battle.player.mana < 5 || battle.player.hp == 0
     }
     private var isHolyLightDisabled: Bool {
-        playerMana < 10 || playerHp == 0
+        battle.player.mana < 10 || battle.player.hp == 0
     }
     
     var body: some View {
@@ -88,5 +85,5 @@ struct ActionBar : View {
 
 
 #Preview {
-    ActionBar(onAttack: {}, onPotion: {}, onJudgement: {}, onHolyLight: {}, xp: xp, level: level,playerHp: playerHP,playerMana: playerMana)
+    ActionBar(onAttack: {}, onPotion: {}, onJudgement: {}, onHolyLight: {})
 }

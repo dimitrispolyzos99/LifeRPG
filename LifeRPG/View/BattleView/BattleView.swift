@@ -14,13 +14,10 @@ struct BattleView: View {
         
         VStack {
             HStack(alignment: .top, spacing: 12){
-                PlayerBar(playerHP: battle.player.hp,
-                          playerMana: battle.player.mana,
-                          playerHit: battle.playerHit)
+                PlayerBar(battle: battle)
                 .frame(maxWidth: .infinity)
                 
-                EnemyBar(enemyHP: battle.enemy.hp,
-                         enemyHit: battle.enemyHit)
+                EnemyBar(battle: battle)
                 .frame(maxWidth: .infinity)
 
             }
@@ -28,24 +25,14 @@ struct BattleView: View {
             
             BattlelogView(battleLog: battle.battleLog)
             
-            BattleField(enemyHit: battle.enemyHit, enemyIsAlive: battle.enemy.isAlive)
+            BattleField(battle: battle)
             
             Spacer()
             
-            ActionBar(
-                onAttack: {
-                    battle.attackMurloc()
-                }, onPotion: {
-                    battle.usePotion()
-                }, onJudgement: {
-                    battle.judgement()
-                }, onHolyLight: {
-                    battle.holyLight()
-                },
-                xp: battle.player.xp,
-                level: battle.player.level,
-                playerHp: battle.player.hp,
-                playerMana: battle.player.mana
+            ActionBar(onAttack: battle.attackMurloc,
+                      onPotion: battle.usePotion,
+                      onJudgement: battle.judgement,
+                      onHolyLight: battle.holyLight
             )
             if battle.isGameOver{
                 Button("Restart Battle") {

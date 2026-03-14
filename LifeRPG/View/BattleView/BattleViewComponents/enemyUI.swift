@@ -7,40 +7,37 @@
 
 import SwiftUI
 
-var enemyHP = 50
-var enemyHit = false
-var enemyIsAlive = true
 
 struct BattleField : View {
-    var enemyHit = false
-    var enemyIsAlive = true
+    
+    @ObservedObject var battle: BattleViewModel
     
     var body: some View {
         
         VStack {
             ZStack{
-                if enemyIsAlive{
+                if battle.enemy.isAlive{
                     Image("murloc")
                         .resizable()
                         .scaledToFit()
                         .frame(height: 250)
                         .offset(x: -15, y: 20)
-                        .offset(x: enemyHit ? 15 : 5, y:10)
+                        .offset(x: battle.enemyHit ? 15 : 5, y:10)
                 }
             }
             .frame(maxWidth: .infinity)
             .padding()
-            .animation(.easeInOut(duration: 0.88), value: enemyHit)
-            .opacity(enemyIsAlive ? 1 : 0)
-            .animation(.easeOut(duration: 0.3), value: enemyIsAlive)
+            .animation(.easeInOut(duration: 0.88), value: battle.enemyHit)
+            .opacity(battle.enemy.isAlive ? 1 : 0)
+            .animation(.easeOut(duration: 0.3), value: battle.enemy.isAlive)
         }
     }
 }
 
 struct EnemyBar : View {
-    var enemyHP = 50
-    var enemyMana = 20
-    var enemyHit = false
+
+    @ObservedObject var battle: BattleViewModel
+
     
     var body: some View {
         VStack(spacing: 10){
@@ -48,21 +45,21 @@ struct EnemyBar : View {
             Text("Murloc")
                 .font(.headline)
                 .bold()
-            Text("HP \(enemyHP)/50")
+            Text("HP \(battle.enemy.hp)/50")
                 .font(.caption)
-                ProgressView(value: Double(enemyHP), total: 50)
+            ProgressView(value: Double(battle.enemy.hp), total: 50)
                     .tint(.red)
                     .padding()
                     .frame(height: 6)
-            Text("MP \(enemyMana)/20")
+            Text("MP \(battle.enemy.mana)/20")
                 .font(.caption)
-                ProgressView(value: Double(enemyMana), total: 20)
+            ProgressView(value: Double(battle.enemy.mana), total: 20)
                     .tint(.blue)
                     .padding()
                     .frame(height: 9)
 
         }
-        .background(enemyHit ? Color.red.opacity(0.5) : Color.green.opacity(0.4))
+        .background(battle.enemyHit ? Color.red.opacity(0.5) : Color.green.opacity(0.4))
         .background(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .fill(
@@ -78,8 +75,8 @@ struct EnemyBar : View {
         )
         .cornerRadius(16)
         .padding(10)
-        .offset(x: enemyHit ? 6 : 0)
-        .animation(.easeInOut(duration: 0.15), value: enemyHit)
+        .offset(x: battle.enemyHit ? 6 : 0)
+        .animation(.easeInOut(duration: 0.15), value: battle.enemyHit)
 
         }
     }
@@ -88,7 +85,8 @@ struct EnemyBar : View {
 
 
 #Preview {
-    BattleField()
-    EnemyBar(enemyHP: enemyHP, enemyHit: enemyHit)
+    VStack {
+        BattleField(battle: BattleViewModel())
+        EnemyBar(battle: BattleViewModel())
+    }
 }
-
