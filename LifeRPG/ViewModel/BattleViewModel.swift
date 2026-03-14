@@ -109,8 +109,8 @@ class BattleViewModel: ObservableObject {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6){
                 self.respawnEnemy()
             }
-            if player.xp >= levelUpCost * level {
-                level += 1
+            if player.xp >= levelUpCost * player.level {
+                player.level += 1
                 player.xp = 0
                 addLog("Congrats you leveled up")
             }

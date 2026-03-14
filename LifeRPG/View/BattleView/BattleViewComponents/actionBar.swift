@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-var level = 1
-var xp = 0
 
 struct ActionBar : View {
     let onAttack: () -> Void
@@ -16,7 +14,7 @@ struct ActionBar : View {
     let onJudgement: () -> Void
     let onHolyLight: () -> Void
     
-    @ObservedObject var battle = BattleViewModel()
+    @ObservedObject var battle: BattleViewModel
     
     private var isAttackDisabled: Bool {
         battle.player.hp == 0
@@ -62,12 +60,12 @@ struct ActionBar : View {
                 .disabled(isHolyLightDisabled)
             }
             VStack(spacing: 4){
-                Text("Level: \(level)")
+                Text("Level: \(battle.player.level)")
                     .font(.title3)
                     .foregroundColor(.white)
                     .bold()
                 
-                ProgressView(value: Double(xp), total:Double((100 * level)))
+                ProgressView(value: Double(battle.player.xp), total:Double((100 * battle.player.level)))
                     .tint(.green)
                     .foregroundColor(.white)
                     .padding()
@@ -85,5 +83,5 @@ struct ActionBar : View {
 
 
 #Preview {
-    ActionBar(onAttack: {}, onPotion: {}, onJudgement: {}, onHolyLight: {})
+    ActionBar(onAttack: {}, onPotion: {}, onJudgement: {}, onHolyLight: {}, battle: BattleViewModel())
 }

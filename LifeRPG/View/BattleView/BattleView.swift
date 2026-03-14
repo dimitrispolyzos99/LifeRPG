@@ -29,10 +29,12 @@ struct BattleView: View {
             
             Spacer()
             
-            ActionBar(onAttack: battle.attackMurloc,
-                      onPotion: battle.usePotion,
-                      onJudgement: battle.judgement,
-                      onHolyLight: battle.holyLight
+            ActionBar(
+                onAttack: battle.attackMurloc,
+                onPotion: battle.usePotion,
+                onJudgement: battle.judgement,
+                onHolyLight: battle.holyLight,
+                battle: battle
             )
             if battle.isGameOver{
                 Button("Restart Battle") {
