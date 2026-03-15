@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MainMenuView: View {
+    @StateObject var battle = BattleViewModel()
     var body: some View {
         NavigationStack {
             ZStack {
@@ -38,5 +39,5 @@ struct MainMenuView: View {
 }
 
 #Preview {
-    MainMenuView()
+    MainMenuView(battle: BattleViewModel())
 }

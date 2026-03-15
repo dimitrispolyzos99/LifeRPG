@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BattleView: View {
-    @StateObject var battle = BattleViewModel()
+    @ObservedObject var battle: BattleViewModel
     
     var body: some View {
         
@@ -66,5 +66,5 @@ struct BattleView: View {
 }
 
 #Preview {
-    BattleView()
+    BattleView(battle: BattleViewModel())
 }

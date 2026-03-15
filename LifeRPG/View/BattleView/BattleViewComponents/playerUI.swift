@@ -17,19 +17,19 @@ struct PlayerBar : View {
     var body: some View {
         VStack(spacing: 10){
             
-
-            Text("Paladin")
+            
+            Text(battle.player.playerClass.rawValue)
                 .font(.headline)
                 .bold()
-            Text("HP \(battle.player.hp)/70")
+            Text("HP \(battle.player.hp)/\(battle.maxPlayerHP)")
                 .font(.caption)
-            ProgressView(value: Double(battle.player.hp), total: 70)
+            ProgressView(value: Double(battle.player.hp), total: Double(battle.maxPlayerHP))
                     .tint(.red)
                     .padding()
                     .frame(height: 6)
-            Text("MP \(battle.player.mana)/20")
+            Text("MP \(battle.player.mana)/\(battle.maxPlayerMana)")
                 .font(.caption)
-            ProgressView(value: Double(battle.player.mana), total: 20)
+            ProgressView(value: Double(battle.maxPlayerMana), total: Double(battle.maxPlayerMana))
                     .tint(.blue)
                     .padding()
                     .frame(height: 9)

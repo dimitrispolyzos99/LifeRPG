@@ -23,32 +23,33 @@ struct ClassSelectionView: View {
                         .font(Font.largeTitle.bold())
                         .foregroundColor(.black)
                     HStack{
-                        NavigationLink(destination: BattleView()) {
+                        
+                        NavigationLink(destination: BattleView(battle: battle)) {
                             ActionButton2(title: "Warrior")
                         }
-//                        .simultaneousGesture(TapGesture().onEnded {
-//                            battle.applyClass(.warrior)
-//                        })
-                        NavigationLink(destination: BattleView()) {
+                        .simultaneousGesture(TapGesture().onEnded {
+                            battle.applyClass(.warrior)
+                        })
+                        NavigationLink(destination: BattleView(battle: battle)) {
                             ActionButton2(title: "Mage")
                         }
-//                        .simultaneousGesture(TapGesture().onEnded {
-//                            battle.applyClass(.mage)
-//                        })
+                        .simultaneousGesture(TapGesture().onEnded {
+                            battle.applyClass(.mage)
+                        })
                     }
                     HStack{
-                        NavigationLink(destination: BattleView()) {
+                        NavigationLink(destination: BattleView(battle: battle)) {
                             ActionButton2(title: "Paladin")
                         }
-//                        .simultaneousGesture(TapGesture().onEnded {
-//                            battle.applyClass(.paladin)
-//                        })
-                        NavigationLink(destination: BattleView()) {
+                        .simultaneousGesture(TapGesture().onEnded {
+                            battle.applyClass(.paladin)
+                        })
+                        NavigationLink(destination: BattleView(battle: battle)) {
                             ActionButton2(title: "Rogue")
                         }
-//                        .simultaneousGesture(TapGesture().onEnded {
-//                            battle.applyClass(.rogue)
-//                        })
+                        .simultaneousGesture(TapGesture().onEnded {
+                            battle.applyClass(.rogue)
+                        })
                     }
                 }
             }

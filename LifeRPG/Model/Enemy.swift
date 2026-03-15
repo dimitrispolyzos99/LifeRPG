@@ -7,8 +7,9 @@
 
 import Foundation
 
-struct Enemy {
+struct Enemy  {
     var hp: Int
     var mana: Int
     var isAlive: Bool
+    var name : String
 }
