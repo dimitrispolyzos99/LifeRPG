@@ -12,4 +12,5 @@ struct Enemy  {
     var mana: Int
     var isAlive: Bool
     var name : String
+    
 }

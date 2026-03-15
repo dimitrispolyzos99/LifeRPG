@@ -14,6 +14,7 @@ struct Player : Codable {
     var mana: Int
     var xp: Int
     var level: Int
+    var stage : Int
 
     init(sellectedClass: PlayerClass) {
         self.playerClass = sellectedClass
@@ -21,6 +22,7 @@ struct Player : Codable {
         self.mana = playerClass.maxMana
         self.xp = 0
         self.level = 1
+        self.stage = 1
     }
 
 }

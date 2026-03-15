@@ -21,6 +21,10 @@ struct BattleView: View {
                 .frame(maxWidth: .infinity)
 
             }
+            Text ("STAGE \(battle.player.stage)")
+                .font(.headline)
+                .bold()
+                .foregroundColor(.white)
 
             
             BattlelogView(battleLog: battle.battleLog)

@@ -10,12 +10,12 @@ import Combine
 
 
 class BattleViewModel: ObservableObject {
-    private let maxEnemyHP = 50
+
 //    var maxPlayerHP = 100
 //    var maxPlayerMana = 40
     @Published var maxPlayerHP: Int = 0
     @Published var maxPlayerMana: Int = 0
-
+    @Published var maxEnemyHP = 50
 
 
     private let basicAttackDamage = 10
@@ -36,6 +36,7 @@ class BattleViewModel: ObservableObject {
     private let paladinMana = 20
     private let rogueHP = 40
     private let rogueMana = 30
+
     
     private func updateMaxStats(for playerClass: PlayerClass) {
         switch playerClass {
@@ -104,12 +105,57 @@ class BattleViewModel: ObservableObject {
     var isGameOver: Bool {
         player.hp == 0
     }
-    func applyClass(_ selectedClass: PlayerClass){
-        player.playerClass = selectedClass
-        updateMaxStats(for: selectedClass)
-        player.hp = maxPlayerHP
-        player.mana = maxPlayerMana
+    
+
+    private func respawnEnemy(){
+        enemy.isAlive = true
+        maxEnemyHP += (player.stage * 10)
+        enemy.hp = maxEnemyHP
+        addLog("A new \(enemy.name) appears")
     }
+    private func resolveEnemyTurn(){
+        if enemy.hp <= 0 {
+            enemy.isAlive = false
+            player.xp += xpReward
+            addLog("You killed the \(enemy.name)")
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6){
+                self.respawnEnemy()
+            }
+            if player.xp >= levelUpCost * player.level {
+                player.level += 1
+                player.xp = 0
+                player.stage += 1
+                savePlayer()
+                addLog("Congrats you leveled up")
+            }
+        } else {
+            enemyAttack()
+        }
+    }
+    private func enemyAttack() {
+        playerHit = true
+        player.mana = min(player.mana + manaRegenPerTurn, maxPlayerMana)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) {
+            self.playerHit = false
+        }
+        player.hp = max(player.hp - enemyAttackDamage, 0)
+        if player.hp == 0{
+            addLog("\(player.playerClass.name) was defeated")
+        } else {
+            addLog("\(enemy.name) attacked \(player.playerClass.name) for \(enemyAttackDamage + (player.stage * 2)) dmg")
+        }
+    }
+    private func murlocTakesDamage() {
+        enemyHit = true
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) {
+            self.enemyHit = false
+        }
+    }
+    
+    
     func savePlayer() {
         let encoder = JSONEncoder()
         
@@ -117,7 +163,6 @@ class BattleViewModel: ObservableObject {
             UserDefaults.standard.set(data, forKey: "player")
         }
     }
-    
     func loadPlayer() {
         if let savedPlayerData = UserDefaults.standard.data(forKey: "player") {
             let decoder = JSONDecoder()
@@ -127,7 +172,6 @@ class BattleViewModel: ObservableObject {
             }
         }
     }
-    
     func attackMurloc(){
             murlocTakesDamage()
             enemy.hp -= basicAttackDamage
@@ -146,27 +190,6 @@ class BattleViewModel: ObservableObject {
         addLog("\(player.playerClass.name) used Health Potion")
         enemyAttack()
     }
-    private func enemyAttack() {
-        playerHit = true
-        player.mana = min(player.mana + manaRegenPerTurn, maxPlayerMana)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) {
-            self.playerHit = false
-        }
-        player.hp = max(player.hp - enemyAttackDamage, 0)
-        if player.hp == 0{
-            addLog("\(player.playerClass.name) was defeated")
-        } else {
-            addLog("\(enemy.name) attacked \(player.playerClass.name) for \(enemyAttackDamage) dmg")
-        }
-    }
-    private func murlocTakesDamage() {
-        enemyHit = true
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) {
-            self.enemyHit = false
-        }
-    }
     func restartBattle(){
         enemy.hp = maxEnemyHP
         player.hp = maxPlayerHP
@@ -175,31 +198,6 @@ class BattleViewModel: ObservableObject {
         enemyHit = false
         playerHit = false
         battleLog = ["Battle restarted"]
-    }
-    private func respawnEnemy(){
-        enemy.isAlive = true
-        enemy.hp = maxEnemyHP
-        addLog("A new \(enemy.name) appears")
-    }
-    
-    private func resolveEnemyTurn(){
-        if enemy.hp <= 0 {
-            enemy.isAlive = false
-            player.xp += xpReward
-            addLog("You killed the \(enemy.name)")
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6){
-                self.respawnEnemy()
-            }
-            if player.xp >= levelUpCost * player.level {
-                player.level += 1
-                player.xp = 0
-                savePlayer()
-                addLog("Congrats you leveled up")
-            }
-        } else {
-            enemyAttack()
-        }
     }
     func holyLight(){
         if player.mana >= holyLightManaCost{
@@ -223,6 +221,12 @@ class BattleViewModel: ObservableObject {
         else {
             addLog("Not enough mana")
         }
+    }
+    func applyClass(_ selectedClass: PlayerClass){
+        player.playerClass = selectedClass
+        updateMaxStats(for: selectedClass)
+        player.hp = maxPlayerHP
+        player.mana = maxPlayerMana
     }
 }
 
