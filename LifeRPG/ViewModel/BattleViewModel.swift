@@ -13,10 +13,11 @@ class BattleViewModel: ObservableObject {
     private let maxEnemyHP = 50
 //    var maxPlayerHP = 100
 //    var maxPlayerMana = 40
-    @Published var maxPlayerHP = 20
-    @Published var maxPlayerMana = 20
+    @Published var maxPlayerHP: Int = 0
+    @Published var maxPlayerMana: Int = 0
 
-    
+
+
     private let basicAttackDamage = 10
     private let enemyAttackDamage = 5
     private let judgementDamage = 15
@@ -36,14 +37,28 @@ class BattleViewModel: ObservableObject {
     private let rogueHP = 40
     private let rogueMana = 30
     
-
-    @Published var player = Player(
-        hp: 70,
-        mana: 20,
-        xp: 0,
-        level: 1,
-        playerClass: .paladin
-    )
+    private func updateMaxStats(for playerClass: PlayerClass) {
+        switch playerClass {
+        case warrior:
+            maxPlayerHP = warriorHP
+            maxPlayerMana = warriorMana
+        case mage:
+            maxPlayerHP = mageHP
+            maxPlayerMana = mageMana
+        case paladin:
+            maxPlayerHP = paladinHP
+            maxPlayerMana = paladinMana
+        case rogue:
+            maxPlayerHP = rogueHP
+            maxPlayerMana = rogueMana
+        default:
+            maxPlayerHP = 100
+            maxPlayerMana = 40
+        }
+    }
+    
+    @Published var playerClass: PlayerClass = warrior
+    @Published var player: Player
     @Published var enemy = Enemy(
         hp: 50,
         mana: 20,
@@ -53,49 +68,73 @@ class BattleViewModel: ObservableObject {
     @Published var battleLog: [String] = ["Battle started"]
     @Published var enemyHit = false
     @Published var playerHit = false
+    
+    
+    init() {
+        let initialClass: PlayerClass = warrior
 
+        let initialMaxHP: Int
+        let initialMaxMana: Int
+        switch initialClass {
+        case warrior:
+            initialMaxHP = warriorHP
+            initialMaxMana = warriorMana
+        case mage:
+            initialMaxHP = mageHP
+            initialMaxMana = mageMana
+        case paladin:
+            initialMaxHP = paladinHP
+            initialMaxMana = paladinMana
+        case rogue:
+            initialMaxHP = rogueHP
+            initialMaxMana = rogueMana
+        default:
+            initialMaxHP = 100
+            initialMaxMana = 40
+        }
+
+        self.player = Player(sellectedClass: initialClass)
+        self.playerClass = initialClass
+        self.maxPlayerHP = initialMaxHP
+        self.maxPlayerMana = initialMaxMana
+        self.player.hp = initialMaxHP
+        self.player.mana = initialMaxMana
+    }
     
     var isGameOver: Bool {
         player.hp == 0
     }
-    func applyClass(_ chosenClass: PlayerClass){
-        player.playerClass = chosenClass
+    func applyClass(_ selectedClass: PlayerClass){
+        player.playerClass = selectedClass
+        updateMaxStats(for: selectedClass)
+        player.hp = maxPlayerHP
+        player.mana = maxPlayerMana
+    }
+    func savePlayer() {
+        let encoder = JSONEncoder()
         
-        switch player.playerClass  {
-            case .warrior :
-            player.hp = warriorHP
-            player.mana = warriorMana
-            maxPlayerHP = warriorHP
-            maxPlayerMana = warriorMana
-            
-        case .mage :
-            player.mana = mageHP
-            player.mana = mageMana
-            maxPlayerHP = mageHP
-            maxPlayerMana = mageMana
-            
-        case .paladin :
-            player.mana = paladinHP
-            player.mana = paladinMana
-            maxPlayerHP = paladinHP
-            maxPlayerMana = paladinMana
-            
-        case .rogue :
-            player.mana = rogueHP
-            player.mana = rogueMana
-            maxPlayerHP = rogueHP
-            maxPlayerMana = rogueMana
-            
-            break
+        if let data = try? encoder.encode(player) {
+            UserDefaults.standard.set(data, forKey: "player")
         }
     }
+    
+    func loadPlayer() {
+        if let savedPlayerData = UserDefaults.standard.data(forKey: "player") {
+            let decoder = JSONDecoder()
+            
+            if let loadedPlayer = try? decoder.decode(Player.self, from: savedPlayerData) {
+                player = loadedPlayer
+            }
+        }
+    }
+    
     func attackMurloc(){
             murlocTakesDamage()
             enemy.hp -= basicAttackDamage
-        addLog("\(player.playerClass.rawValue) attacks \(enemy.name) for \(basicAttackDamage) dmg")
+        addLog("\(player.playerClass.name) attacks \(enemy.name) for \(basicAttackDamage) dmg")
             resolveEnemyTurn()
         }
-    private func addLog(_ message: String) {
+    func addLog(_ message: String) {
         battleLog.append(message)
 
         if battleLog.count > 20 {
@@ -104,7 +143,7 @@ class BattleViewModel: ObservableObject {
     }
     func usePotion() {
         player.hp = min(player.hp + potionHeal, maxPlayerHP)
-        addLog("\(player.playerClass.rawValue) used Health Potion")
+        addLog("\(player.playerClass.name) used Health Potion")
         enemyAttack()
     }
     private func enemyAttack() {
@@ -116,9 +155,9 @@ class BattleViewModel: ObservableObject {
         }
         player.hp = max(player.hp - enemyAttackDamage, 0)
         if player.hp == 0{
-            addLog("\(player.playerClass.rawValue) was defeated")
+            addLog("\(player.playerClass.name) was defeated")
         } else {
-            addLog("\(enemy.name) attacked \(player.playerClass.rawValue) for \(enemyAttackDamage) dmg")
+            addLog("\(enemy.name) attacked \(player.playerClass.name) for \(enemyAttackDamage) dmg")
         }
     }
     private func murlocTakesDamage() {
@@ -155,6 +194,7 @@ class BattleViewModel: ObservableObject {
             if player.xp >= levelUpCost * player.level {
                 player.level += 1
                 player.xp = 0
+                savePlayer()
                 addLog("Congrats you leveled up")
             }
         } else {
@@ -165,7 +205,7 @@ class BattleViewModel: ObservableObject {
         if player.mana >= holyLightManaCost{
             player.mana -= holyLightManaCost
             player.hp = min(player.hp + holyLightHeal, maxPlayerHP)
-            addLog("\(player.playerClass.rawValue) used holy light and healed for 15 HP")
+            addLog("\(player.playerClass.name) used holy light and healed for 15 HP")
             enemyAttack()
         }
         else {
@@ -176,7 +216,7 @@ class BattleViewModel: ObservableObject {
         if player.mana >= judgementManaCost{
             player.mana -= judgementManaCost
             enemy.hp -= judgementDamage
-            addLog("\(player.playerClass.rawValue) used judgement on Murloc")
+            addLog("\(player.playerClass.name) used judgement on Murloc")
             murlocTakesDamage()
             resolveEnemyTurn()
         }

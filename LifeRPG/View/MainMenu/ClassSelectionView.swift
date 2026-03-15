@@ -28,13 +28,13 @@ struct ClassSelectionView: View {
                             ActionButton2(title: "Warrior")
                         }
                         .simultaneousGesture(TapGesture().onEnded {
-                            battle.applyClass(.warrior)
+                            battle.applyClass(warrior)
                         })
                         NavigationLink(destination: BattleView(battle: battle)) {
                             ActionButton2(title: "Mage")
                         }
                         .simultaneousGesture(TapGesture().onEnded {
-                            battle.applyClass(.mage)
+                            battle.applyClass(mage)
                         })
                     }
                     HStack{
@@ -42,13 +42,13 @@ struct ClassSelectionView: View {
                             ActionButton2(title: "Paladin")
                         }
                         .simultaneousGesture(TapGesture().onEnded {
-                            battle.applyClass(.paladin)
+                            battle.applyClass(paladin)
                         })
                         NavigationLink(destination: BattleView(battle: battle)) {
                             ActionButton2(title: "Rogue")
                         }
                         .simultaneousGesture(TapGesture().onEnded {
-                            battle.applyClass(.rogue)
+                            battle.applyClass(rogue)
                         })
                     }
                 }

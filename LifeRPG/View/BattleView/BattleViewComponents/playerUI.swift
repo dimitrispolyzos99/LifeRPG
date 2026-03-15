@@ -18,7 +18,7 @@ struct PlayerBar : View {
         VStack(spacing: 10){
             
             
-            Text(battle.player.playerClass.rawValue)
+            Text(battle.player.playerClass.name)
                 .font(.headline)
                 .bold()
             Text("HP \(battle.player.hp)/\(battle.maxPlayerHP)")

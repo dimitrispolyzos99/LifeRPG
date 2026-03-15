@@ -24,9 +24,12 @@ struct MainMenuView: View {
                             ActionButton2(title: "New Game")
                         }
 
-                        NavigationLink(destination: ClassSelectionView(battle: BattleViewModel())) {
+                        NavigationLink(destination: BattleView(battle: battle)) {
                             ActionButton2(title: "Load Game")
                         }
+                        .simultaneousGesture(TapGesture().onEnded {
+                            battle.loadPlayer()
+                        })
                         NavigationLink(destination: ClassSelectionView(battle: BattleViewModel())) {
                             ActionButton2(title: "Settings")
                         }

@@ -7,17 +7,50 @@
 
 import Foundation
 
-struct Player {
+struct Player : Codable {
+
+    var playerClass: PlayerClass
     var hp: Int
     var mana: Int
     var xp: Int
     var level: Int
-    var playerClass: PlayerClass
+
+    init(sellectedClass: PlayerClass) {
+        self.playerClass = sellectedClass
+        self.hp = playerClass.maxHP
+        self.mana = playerClass.maxMana
+        self.xp = 0
+        self.level = 1
+    }
+
 }
 
-enum PlayerClass : String {
-    case warrior = "Warrior"
-    case mage = "Mage"
-    case paladin = "Paladin"
-    case rogue = "Rogue"
+struct PlayerClass : Equatable, Codable {
+    let name: String
+    let maxHP: Int
+    let maxMana: Int
 }
+
+let paladin = PlayerClass(
+    name: "Paladin",
+    maxHP: 70,
+    maxMana: 20
+)
+
+let mage = PlayerClass(
+    name: "Mage",
+    maxHP: 50,
+    maxMana: 40
+)
+
+let rogue = PlayerClass(
+    name: "Rogue",
+    maxHP: 60,
+    maxMana: 25
+)
+
+let warrior = PlayerClass(
+    name: "Warrior",
+    maxHP: 60,
+    maxMana: 10
+)
