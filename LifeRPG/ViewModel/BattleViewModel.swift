@@ -36,6 +36,20 @@ class BattleViewModel: ObservableObject {
     private let paladinMana = 20
     private let rogueHP = 40
     private let rogueMana = 30
+    private let executeHPCost = 5
+    private let executeDamage = 30
+    private let fireballManaCost = 10
+    private let fireballDamage = 40
+    private let garroteManaCost = 15
+    private let garroteDamage = 20
+    private let frostballManaCost = 20
+    private let frostballDamage = 25
+    private let assassinateManaCost = 20
+    private let assassinateDamage = 50
+    private let victoryRushDamage = 30
+    private let victoryRushManaCost = 10
+    private let victoryRushHeal = 10
+
 
     
     private func updateMaxStats(for playerClass: PlayerClass) {
@@ -57,6 +71,8 @@ class BattleViewModel: ObservableObject {
             maxPlayerMana = 40
         }
     }
+    
+    
     
     @Published var playerClass: PlayerClass = warrior
     @Published var player: Player
@@ -106,7 +122,8 @@ class BattleViewModel: ObservableObject {
         player.hp == 0
     }
     
-
+    
+    
     private func respawnEnemy(){
         enemy.isAlive = true
         maxEnemyHP += (player.stage * 10)
@@ -134,17 +151,20 @@ class BattleViewModel: ObservableObject {
         }
     }
     private func enemyAttack() {
+        
+        let scaledDamage = enemyAttackDamage + (player.stage * 2)
+        
         playerHit = true
         player.mana = min(player.mana + manaRegenPerTurn, maxPlayerMana)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) {
             self.playerHit = false
         }
-        player.hp = max(player.hp - enemyAttackDamage, 0)
+        player.hp = max(player.hp - scaledDamage, 0)
         if player.hp == 0{
             addLog("\(player.playerClass.name) was defeated")
         } else {
-            addLog("\(enemy.name) attacked \(player.playerClass.name) for \(enemyAttackDamage + (player.stage * 2)) dmg")
+            addLog("\(enemy.name) attacked \(player.playerClass.name) for \(scaledDamage) dmg")
         }
     }
     private func murlocTakesDamage() {
@@ -156,6 +176,110 @@ class BattleViewModel: ObservableObject {
     }
     
     
+    
+    
+    
+    func victoryRush(){
+        if player.mana >= victoryRushManaCost {
+            player.mana -= victoryRushManaCost
+            enemy.hp -= victoryRushDamage
+            player.hp += victoryRushHeal
+            addLog("\(player.playerClass.name) used \(player.playerClass.spellTwo) on \(enemy.name) and healed for \(victoryRushHeal) hp")
+            murlocTakesDamage()
+            resolveEnemyTurn()
+        }
+        else {
+            addLog("Not enough mana")
+        }
+    }
+    func assasinate(){
+        if player.mana >= assassinateManaCost{
+            player.mana -= assassinateManaCost
+            enemy.hp -= assassinateDamage
+            addLog("\(player.playerClass.name) used \(player.playerClass.spellTwo) and backstabed \(enemy.name)")
+            murlocTakesDamage()
+            resolveEnemyTurn()
+        }
+        else {
+            addLog("Not enough mana")
+        }
+    }
+    func garrote(){
+        if player.mana >= garroteManaCost{
+            player.mana -= garroteManaCost
+            enemy.hp -= garroteDamage
+            addLog("\(player.playerClass.name) used \(player.playerClass.spellOne) and backstabed \(enemy.name)")
+            murlocTakesDamage()
+            resolveEnemyTurn()
+        }
+        else {
+            addLog("Not enough mana")
+        }
+    }
+    func fireball(){
+        if player.mana >= fireballManaCost{
+            player.mana -= fireballManaCost
+            enemy.hp -= fireballDamage
+            addLog("\(player.playerClass.name) casted \(player.playerClass.spellOne) on \(enemy.name)")
+            murlocTakesDamage()
+            resolveEnemyTurn()
+        }
+        else {
+            addLog("Not enough mana")
+        }
+    }
+    func frostball(){
+        if player.mana >= frostballManaCost{
+            player.mana -= frostballManaCost
+            enemy.hp -= frostballDamage
+            addLog("\(player.playerClass.name) casted \(player.playerClass.spellTwo) on \(enemy.name)")
+            murlocTakesDamage()
+            resolveEnemyTurn()
+        }
+        else {
+            addLog("Not enough mana")
+        }
+    }
+    func execute() {
+        if player.hp >= executeHPCost{
+            player.hp -= executeHPCost
+            enemy.hp -= executeDamage
+            addLog("\(player.playerClass.name) sucrificed \(executeHPCost) HP and used \(player.playerClass.spellOne) on \(enemy.name)")
+            murlocTakesDamage()
+            resolveEnemyTurn()
+        }
+        else {
+            addLog("Not enough HP")
+        }
+    }
+    func spellOne(){
+        switch playerClass {
+        case warrior:
+            execute()
+        case paladin:
+            judgement()
+        case mage:
+            fireball()
+        case rogue:
+            garrote()
+        default :
+            break
+        }
+    }
+    func spellTwo(){
+        switch playerClass {
+        case warrior:
+            victoryRush()
+        case paladin:
+            holyLight()
+        case mage:
+            frostball()
+        case rogue:
+            assasinate()
+        default :
+            break
+        }
+    }
     func savePlayer() {
         let encoder = JSONEncoder()
         
@@ -214,7 +338,7 @@ class BattleViewModel: ObservableObject {
         if player.mana >= judgementManaCost{
             player.mana -= judgementManaCost
             enemy.hp -= judgementDamage
-            addLog("\(player.playerClass.name) used judgement on Murloc")
+            addLog("\(player.playerClass.name) used \(player.playerClass.spellOne) on \(enemy.name)")
             murlocTakesDamage()
             resolveEnemyTurn()
         }

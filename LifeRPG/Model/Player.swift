@@ -16,6 +16,7 @@ struct Player : Codable {
     var level: Int
     var stage : Int
 
+
     init(sellectedClass: PlayerClass) {
         self.playerClass = sellectedClass
         self.hp = playerClass.maxHP
@@ -31,28 +32,38 @@ struct PlayerClass : Equatable, Codable {
     let name: String
     let maxHP: Int
     let maxMana: Int
+    var spellOne: String
+    var spellTwo: String
 }
 
 let paladin = PlayerClass(
     name: "Paladin",
     maxHP: 70,
-    maxMana: 20
+    maxMana: 20,
+    spellOne: "Justice",
+    spellTwo: "Holy Light",
 )
 
 let mage = PlayerClass(
     name: "Mage",
     maxHP: 50,
-    maxMana: 40
+    maxMana: 40,
+    spellOne: "Fireball",
+    spellTwo: "Frostbolt"
 )
 
 let rogue = PlayerClass(
     name: "Rogue",
     maxHP: 60,
-    maxMana: 25
+    maxMana: 25,
+    spellOne: "Garote",
+    spellTwo: "Assassinate"
 )
 
 let warrior = PlayerClass(
     name: "Warrior",
     maxHP: 60,
-    maxMana: 10
+    maxMana: 10,
+    spellOne: "Execute",
+    spellTwo: "Victory Rush"
 )

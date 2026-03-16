@@ -47,17 +47,17 @@ struct ActionBar : View {
                 .disabled(isAttackDisabled)
             }
             HStack(spacing: 12){
-                ActionButton(title:"Judgement"){
-                    onJudgement()
+                ActionButton(title:"\(battle.player.playerClass.spellOne)"){
+                    battle.spellOne()
                 }
                 .frame(maxWidth: .infinity)
-                .disabled(isJudgementDisabled)
+
                 
-                ActionButton(title:"Holy Light"){
-                    onHolyLight()
+                ActionButton(title:"\(battle.player.playerClass.spellTwo)"){
+                    battle.spellTwo()
                 }
                 .frame(maxWidth: .infinity)
-                .disabled(isHolyLightDisabled)
+
             }
             VStack(spacing: 4){
                 Text("Level: \(battle.player.level)")
