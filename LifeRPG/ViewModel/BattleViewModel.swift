@@ -349,8 +349,6 @@ class BattleViewModel: ObservableObject {
     func applyClass(_ selectedClass: PlayerClass){
         player.playerClass = selectedClass
         updateMaxStats(for: selectedClass)
-        player.hp = maxPlayerHP
-        player.mana = maxPlayerMana
     }
 }
 
