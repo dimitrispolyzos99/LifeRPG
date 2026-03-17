@@ -13,11 +13,12 @@ class BattleViewModel: ObservableObject {
 
 //    var maxPlayerHP = 100
 //    var maxPlayerMana = 40
-    @Published var maxPlayerHP: Int 
+    @Published var maxPlayerHP: Int
     @Published var maxPlayerMana: Int
     @Published var maxEnemyHP = 50
 
 
+    private let enemyMana = 10
     private let basicAttackDamage = 10
     private let enemyAttackDamage = 5
     private let judgementDamage = 15
@@ -50,43 +51,6 @@ class BattleViewModel: ObservableObject {
     let victoryRushManaCost = 10
     let victoryRushHeal = 10
 
-
-    
-    private func updateMaxStats(for playerClass: PlayerClass) {
-        switch playerClass {
-        case warrior:
-            maxPlayerHP = warriorHP
-            maxPlayerMana = warriorMana
-        case mage:
-            maxPlayerHP = mageHP
-            maxPlayerMana = mageMana
-        case paladin:
-            maxPlayerHP = paladinHP
-            maxPlayerMana = paladinMana
-        case rogue:
-            maxPlayerHP = rogueHP
-            maxPlayerMana = rogueMana
-        default:
-            maxPlayerHP = 100
-            maxPlayerMana = 40
-        }
-    }
-    
-    
-    
-    @Published var playerClass: PlayerClass = warrior
-    @Published var player: Player
-    @Published var enemy = Enemy(
-        hp: 50,
-        mana: 20,
-        isAlive: true,
-        name: "Murloc"
-    )
-    @Published var battleLog: [String] = ["Battle started"]
-    @Published var enemyHit = false
-    @Published var playerHit = false
-    
-    
     init() {
         let initialClass: PlayerClass = warrior
 
@@ -111,12 +75,47 @@ class BattleViewModel: ObservableObject {
         }
 
         self.player = Player(sellectedClass: initialClass)
-        self.playerClass = initialClass
         self.maxPlayerHP = initialMaxHP
         self.maxPlayerMana = initialMaxMana
         self.player.hp = initialMaxHP
         self.player.mana = initialMaxMana
     }
+
+    
+    private func updateMaxStats(for playerClass: PlayerClass) {
+        switch playerClass {
+        case warrior:
+            maxPlayerHP = warriorHP
+            maxPlayerMana = warriorMana
+        case mage:
+            maxPlayerHP = mageHP
+            maxPlayerMana = mageMana
+        case paladin:
+            maxPlayerHP = paladinHP
+            maxPlayerMana = paladinMana
+        case rogue:
+            maxPlayerHP = rogueHP
+            maxPlayerMana = rogueMana
+        default:
+            maxPlayerHP = 100
+            maxPlayerMana = 40
+        }
+    }
+    
+    
+    
+    @Published var player: Player
+    @Published var enemy = Enemy(
+        hp: 50,
+        mana: 20,
+        isAlive: true,
+        name: "Murloc"
+    )
+    @Published var battleLog: [String] = ["Battle started"]
+    @Published var enemyHit = false
+    @Published var playerHit = false
+    
+    
     
     var isGameOver: Bool {
         player.hp == 0
@@ -253,7 +252,7 @@ class BattleViewModel: ObservableObject {
         }
     }
     func spellOne(){
-        switch playerClass {
+        switch player.playerClass {
         case warrior:
             execute()
         case paladin:
@@ -267,7 +266,7 @@ class BattleViewModel: ObservableObject {
         }
     }
     func spellTwo(){
-        switch playerClass {
+        switch player.playerClass {
         case warrior:
             victoryRush()
         case paladin:
@@ -347,8 +346,13 @@ class BattleViewModel: ObservableObject {
         }
     }
     func applyClass(_ selectedClass: PlayerClass){
-        player.playerClass = selectedClass
         updateMaxStats(for: selectedClass)
+        
+        player = Player(sellectedClass: selectedClass)
+        enemy = Enemy(hp: maxEnemyHP, mana: enemyMana , isAlive: true, name: "\(enemy.name)")
+        player.hp = maxPlayerHP
+        player.mana = maxPlayerMana
+        
         savePlayer()
     }
 }
