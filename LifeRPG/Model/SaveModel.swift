@@ -6,3 +6,11 @@
 //
 
 import Foundation
+
+struct SaveData: Codable {
+    var player: Player
+    var enemy: Enemy
+    var maxPlayerHP: Int
+    var maxPlayerMana: Int
+    var maxEnemyHP: Int
+}

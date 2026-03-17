@@ -11,18 +11,15 @@ import Combine
 
 class BattleViewModel: ObservableObject {
 
-//    var maxPlayerHP = 100
-//    var maxPlayerMana = 40
     @Published var maxPlayerHP: Int
     @Published var maxPlayerMana: Int
     @Published var maxEnemyHP = 50
 
-
     private let enemyMana = 10
     private var basicAttackDamage = 10
-    private let enemyAttackDamage = 5
-    private var judgementDamage = 15
-    private var holyLightHeal = 15
+    private var enemyAttackDamage = 5
+    private let judgementDamage = 15
+    private let holyLightHeal = 15
     private let potionHeal = 10
     private let manaRegenPerTurn = 3
     private let xpReward = 50
@@ -38,18 +35,19 @@ class BattleViewModel: ObservableObject {
     private let rogueHP = 40
     private let rogueMana = 30
     let executeHPCost = 5
-    private var executeDamage = 30
+    private let executeDamage = 30
     let fireballManaCost = 10
-    private var fireballDamage = 40
+    private let fireballDamage = 40
     let garroteManaCost = 15
-    private var garroteDamage = 20
+    private let garroteDamage = 20
     let frostballManaCost = 20
-    private var frostballDamage = 25
+    private let frostballDamage = 25
     let assassinateManaCost = 20
-    private var assassinateDamage = 50
-    private var victoryRushDamage = 30
+    private let assassinateDamage = 50
+    private let victoryRushDamage = 30
     let victoryRushManaCost = 10
-    var victoryRushHeal = 10
+    let victoryRushHeal = 10
+    
 
     init() {
         let initialClass: PlayerClass = warrior
@@ -125,25 +123,25 @@ class BattleViewModel: ObservableObject {
     
     private func respawnEnemy(){
         enemy.isAlive = true
-        maxEnemyHP += (player.stage * 2)
+        maxEnemyHP +=  5
+        enemyAttackDamage += 2
         enemy.hp = maxEnemyHP
         addLog("A new \(enemy.name) appears")
     }
-    func levelUp() {
+    private func levelUp() {
         player.level += 1
         player.xp = 0
-        maxPlayerHP += ((player.level - 1) * 3)
-        maxPlayerMana += ((player.level - 1) * 2)
+        maxPlayerHP += 3
+        maxPlayerMana +=  2
         player.hp = maxPlayerHP
         player.mana = maxPlayerMana
-        savePlayer()
+        saveGame()
         addLog("Congrats you leveled up")
     }
-        
-    
     private func resolveEnemyTurn(){
         if enemy.hp <= 0 {
             enemy.isAlive = false
+            saveGame()
             player.stage += 1
             player.xp += xpReward
             addLog("You killed the \(enemy.name)")
@@ -160,19 +158,17 @@ class BattleViewModel: ObservableObject {
     }
     private func enemyAttack() {
         
-        let scaledDamage = enemyAttackDamage + (player.stage * 2)
-        
         playerHit = true
         player.mana = min(player.mana + manaRegenPerTurn, maxPlayerMana)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) {
             self.playerHit = false
         }
-        player.hp = max(player.hp - scaledDamage, 0)
+        player.hp = max(player.hp - enemyAttackDamage, 0)
         if player.hp == 0{
             addLog("\(player.playerClass.name) was defeated")
         } else {
-            addLog("\(enemy.name) attacked \(player.playerClass.name) for \(scaledDamage) dmg")
+            addLog("\(enemy.name) attacked \(player.playerClass.name) for \(enemyAttackDamage) dmg")
         }
     }
     private func murlocTakesDamage() {
@@ -182,7 +178,6 @@ class BattleViewModel: ObservableObject {
             self.enemyHit = false
         }
     }
-    
     
     
     func victoryRush(){
@@ -281,7 +276,7 @@ class BattleViewModel: ObservableObject {
         if player.mana >= judgementManaCost{
             player.mana -= judgementManaCost
             let scaledJudgementDamage = judgementDamage + ((player.level - 1) * 2)
-            enemy.hp -= judgementDamage
+            enemy.hp -= scaledJudgementDamage
             addLog("\(player.playerClass.name) used \(player.playerClass.spellOne) on \(enemy.name) and did \(scaledJudgementDamage) damage")
             murlocTakesDamage()
             resolveEnemyTurn()
@@ -318,19 +313,36 @@ class BattleViewModel: ObservableObject {
             break
         }
     }
-    func savePlayer() {
+    func saveGame() {
         let encoder = JSONEncoder()
-        
-        if let data = try? encoder.encode(player) {
-            UserDefaults.standard.set(data, forKey: "player")
+
+        let saveData = SaveData(
+            player: player,
+            enemy: enemy,
+            maxPlayerHP: maxPlayerHP,
+            maxPlayerMana: maxPlayerMana,
+            maxEnemyHP: maxEnemyHP,
+
+        )
+
+        if let data = try? encoder.encode(saveData) {
+            UserDefaults.standard.set(data, forKey: "saveData")
         }
     }
-    func loadPlayer() {
-        if let savedPlayerData = UserDefaults.standard.data(forKey: "player") {
+    func loadGame() {
+        if let savedData = UserDefaults.standard.data(forKey: "saveData") {
             let decoder = JSONDecoder()
-            
-            if let loadedPlayer = try? decoder.decode(Player.self, from: savedPlayerData) {
-                player = loadedPlayer
+
+            if let loadedSave = try? decoder.decode(SaveData.self, from: savedData) {
+                player = loadedSave.player
+                enemy = loadedSave.enemy
+                maxPlayerHP = loadedSave.maxPlayerHP
+                maxPlayerMana = loadedSave.maxPlayerMana
+                maxEnemyHP = loadedSave.maxEnemyHP
+
+                enemyHit = false
+                playerHit = false
+                battleLog = ["Game loaded"]
             }
         }
     }
@@ -361,19 +373,24 @@ class BattleViewModel: ObservableObject {
         playerHit = false
         battleLog = ["Battle restarted"]
     }
-
-    func applyClass(_ selectedClass: PlayerClass){
-        updateMaxStats(for: selectedClass)
+    func resetGame() {
         maxEnemyHP = 50
-        player = Player(sellectedClass: selectedClass)
-        enemy = Enemy(hp: maxEnemyHP , mana: enemyMana , isAlive: true, name: "\(enemy.name)")
+        enemy = Enemy(hp: maxEnemyHP , mana: enemyMana , isAlive: true, name: "Murloc")
+        enemyAttackDamage = 5
         player.hp = maxPlayerHP
         player.mana = maxPlayerMana
         player.stage = 1
 
+    }
+    func applyClass(_ selectedClass: PlayerClass){
+        updateMaxStats(for: selectedClass)
+        player = Player(sellectedClass: selectedClass)
+        
+        resetGame()
+
         battleLog = ["New character created"]
         addLog("Battle started")
-        savePlayer()
+        saveGame()
     }
 }
 

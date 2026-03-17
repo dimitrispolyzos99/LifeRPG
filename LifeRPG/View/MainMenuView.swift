@@ -20,16 +20,18 @@ struct MainMenuView: View {
                         .scaledToFit()
 
                     VStack(spacing: 16) {
+                        
+                        NavigationLink(destination: BattleView(battle: battle)) {
+                            ActionButton2(title: "Continue")
+                        }
+                        .simultaneousGesture(TapGesture().onEnded {
+                            battle.loadGame()
+                        })
+                        
                         NavigationLink(destination: ClassSelectionView(battle: BattleViewModel())) {
                             ActionButton2(title: "New Game")
                         }
 
-                        NavigationLink(destination: BattleView(battle: battle)) {
-                            ActionButton2(title: "Load Game")
-                        }
-                        .simultaneousGesture(TapGesture().onEnded {
-                            battle.loadPlayer()
-                        })
                         NavigationLink(destination: ClassSelectionView(battle: BattleViewModel())) {
                             ActionButton2(title: "Settings")
                         }

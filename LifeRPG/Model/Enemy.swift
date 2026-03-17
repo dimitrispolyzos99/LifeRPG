@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Enemy  {
+struct Enemy : Codable  {
     var hp: Int
     var mana: Int
     var isAlive: Bool
