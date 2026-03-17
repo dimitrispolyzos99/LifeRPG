@@ -13,8 +13,8 @@ class BattleViewModel: ObservableObject {
 
 //    var maxPlayerHP = 100
 //    var maxPlayerMana = 40
-    @Published var maxPlayerHP: Int = 0
-    @Published var maxPlayerMana: Int = 0
+    @Published var maxPlayerHP: Int 
+    @Published var maxPlayerMana: Int
     @Published var maxEnemyHP = 50
 
 
@@ -25,9 +25,9 @@ class BattleViewModel: ObservableObject {
     private let potionHeal = 10
     private let manaRegenPerTurn = 3
     private let xpReward = 50
-    private let judgementManaCost = 5
+    let judgementManaCost = 5
     private let levelUpCost = 100
-    private let holyLightManaCost = 10
+    let holyLightManaCost = 10
     private let warriorHP = 60
     private let warriorMana = 10
     private let mageHP = 40
@@ -36,19 +36,19 @@ class BattleViewModel: ObservableObject {
     private let paladinMana = 20
     private let rogueHP = 40
     private let rogueMana = 30
-    private let executeHPCost = 5
+    let executeHPCost = 5
     private let executeDamage = 30
-    private let fireballManaCost = 10
+    let fireballManaCost = 10
     private let fireballDamage = 40
-    private let garroteManaCost = 15
+    let garroteManaCost = 15
     private let garroteDamage = 20
-    private let frostballManaCost = 20
+    let frostballManaCost = 20
     private let frostballDamage = 25
-    private let assassinateManaCost = 20
+    let assassinateManaCost = 20
     private let assassinateDamage = 50
     private let victoryRushDamage = 30
-    private let victoryRushManaCost = 10
-    private let victoryRushHeal = 10
+    let victoryRushManaCost = 10
+    let victoryRushHeal = 10
 
 
     
@@ -349,6 +349,7 @@ class BattleViewModel: ObservableObject {
     func applyClass(_ selectedClass: PlayerClass){
         player.playerClass = selectedClass
         updateMaxStats(for: selectedClass)
+        savePlayer()
     }
 }
 

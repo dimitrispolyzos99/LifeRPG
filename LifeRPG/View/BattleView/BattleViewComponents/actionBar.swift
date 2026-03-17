@@ -22,11 +22,34 @@ struct ActionBar : View {
     private var isPotionDisabled: Bool {
         battle.player.hp == 0
     }
-    private var isJudgementDisabled: Bool {
-        battle.player.mana < 5 || battle.player.hp == 0
-    }
     private var isHolyLightDisabled: Bool {
         battle.player.mana < 10 || battle.player.hp == 0
+    }
+    private var isSpellOneDisabled: Bool {
+        switch battle.player.playerClass{
+        case warrior :
+            battle.player.hp < battle.executeHPCost
+        case rogue :
+            battle.player.mana < battle.garroteManaCost || battle.player.hp == 0
+        case mage :
+            battle.player.mana < battle.fireballManaCost || battle.player.hp == 0
+        case paladin :
+            battle.player.mana < battle.judgementManaCost || battle.player.hp == 0
+        default : true
+        }
+    }
+    private var isSpellTwoDisabled: Bool {
+        switch battle.player.playerClass{
+        case warrior :
+            battle.player.mana < battle.victoryRushManaCost || battle.player.hp == 0
+        case rogue :
+            battle.player.mana < battle.assassinateManaCost || battle.player.hp == 0
+        case mage :
+            battle.player.mana < battle.frostballManaCost || battle.player.hp == 0
+        case paladin :
+            battle.player.mana < battle.holyLightManaCost || battle.player.hp == 0
+        default : true
+        }
     }
     
     var body: some View {
@@ -51,12 +74,14 @@ struct ActionBar : View {
                     battle.spellOne()
                 }
                 .frame(maxWidth: .infinity)
+                .disabled(isSpellOneDisabled)
 
                 
                 ActionButton(title:"\(battle.player.playerClass.spellTwo)"){
                     battle.spellTwo()
                 }
                 .frame(maxWidth: .infinity)
+                .disabled(isSpellTwoDisabled)
 
             }
             VStack(spacing: 4){

@@ -40,7 +40,7 @@ let paladin = PlayerClass(
     name: "Paladin",
     maxHP: 70,
     maxMana: 20,
-    spellOne: "Justice",
+    spellOne: "Judgement",
     spellTwo: "Holy Light",
 )
 

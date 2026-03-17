@@ -29,7 +29,7 @@ struct PlayerBar : View {
                     .frame(height: 6)
             Text("MP \(battle.player.mana)/\(battle.maxPlayerMana)")
                 .font(.caption)
-            ProgressView(value: Double(battle.maxPlayerMana), total: Double(battle.maxPlayerMana))
+            ProgressView(value: Double(battle.player.mana), total: Double(battle.maxPlayerMana))
                     .tint(.blue)
                     .padding()
                     .frame(height: 9)
