@@ -16,20 +16,33 @@ struct BattleField : View {
         
         VStack {
             ZStack{
-                if battle.enemy.isAlive{
-                    Image("murloc")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 250)
-                        .offset(x: -15, y: 20)
-                        .offset(x: battle.enemyHit ? 15 : 5, y:10)
+                HStack{
+                    
+                        Image("\(battle.player.playerClass.name)")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 250)
+                            .offset(x: -15, y: 20)
+                            .offset(x: battle.playerHit ? -15 : 5, y:10)
+                            .frame(maxWidth: .infinity)
+                    
+                    if battle.enemy.isAlive{
+                        Image("\(battle.enemy.name)")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 250)
+                            .offset(x: -15, y: 20)
+                            .offset(x: battle.enemyHit ? 15 : 5, y:10)
+                            .frame(maxWidth: .infinity)
+                            .opacity(battle.enemy.isAlive ? 1 : 0)
+                            .animation(.easeOut(duration: 0.3), value: battle.enemy.isAlive)
+                    }
                 }
             }
             .frame(maxWidth: .infinity)
             .padding()
             .animation(.easeInOut(duration: 0.88), value: battle.enemyHit)
-            .opacity(battle.enemy.isAlive ? 1 : 0)
-            .animation(.easeOut(duration: 0.3), value: battle.enemy.isAlive)
+            
         }
     }
 }
@@ -42,7 +55,7 @@ struct EnemyBar : View {
     var body: some View {
         VStack(spacing: 10){
             
-            Text("Murloc")
+            Text("\(battle.enemy.name)")
                 .font(.headline)
                 .bold()
             Text("HP \(battle.enemy.hp)/\(battle.maxEnemyHP)")

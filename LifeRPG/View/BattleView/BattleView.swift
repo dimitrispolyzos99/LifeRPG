@@ -53,18 +53,19 @@ struct BattleView: View {
         }
         .padding()
         .background{
-
+            
             ZStack {
-                Image("forestBG1")
+                Image("\(battle.currentArena)")
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
                 
                 Color.black.opacity(0.45)
                     .ignoresSafeArea()
+                
+
             }
         }
-        
     }
 
 }

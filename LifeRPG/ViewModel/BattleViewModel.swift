@@ -14,6 +14,7 @@ class BattleViewModel: ObservableObject {
     @Published var maxPlayerHP: Int
     @Published var maxPlayerMana: Int
     @Published var maxEnemyHP = 50
+    @Published var currentArena: String
 
     private let enemyMana = 10
     private var basicAttackDamage = 10
@@ -51,6 +52,8 @@ class BattleViewModel: ObservableObject {
 
     init() {
         let initialClass: PlayerClass = warrior
+        
+        let initialArena = "Coast"
 
         let initialMaxHP: Int
         let initialMaxMana: Int
@@ -71,12 +74,13 @@ class BattleViewModel: ObservableObject {
             initialMaxHP = 100
             initialMaxMana = 40
         }
-
+        self.currentArena = initialArena
         self.player = Player(sellectedClass: initialClass)
         self.maxPlayerHP = initialMaxHP
         self.maxPlayerMana = initialMaxMana
         self.player.hp = initialMaxHP
         self.player.mana = initialMaxMana
+
     }
 
     
@@ -100,6 +104,18 @@ class BattleViewModel: ObservableObject {
         }
     }
     
+    func updateArena(){
+        switch player.stage{
+        case 1...3:
+            currentArena = "Coast"
+        case 4...6:
+            currentArena = "Forest"
+        case 7...9:
+            currentArena = "HauntedHouse"
+        default:
+            currentArena = "Volcano"
+        }
+    }
 
     
     @Published var player: Player
@@ -114,6 +130,8 @@ class BattleViewModel: ObservableObject {
     @Published var playerHit = false
     
     
+
+    
     
     var isGameOver: Bool {
         player.hp == 0
@@ -126,6 +144,9 @@ class BattleViewModel: ObservableObject {
         maxEnemyHP +=  5
         enemyAttackDamage += 2
         enemy.hp = maxEnemyHP
+        enemy = enemyForStage(player.stage)
+        updateArena()
+        maxEnemyHP = enemy.hp
         addLog("A new \(enemy.name) appears")
     }
     private func levelUp() {
@@ -322,7 +343,7 @@ class BattleViewModel: ObservableObject {
             maxPlayerHP: maxPlayerHP,
             maxPlayerMana: maxPlayerMana,
             maxEnemyHP: maxEnemyHP,
-
+            currentArena: currentArena
         )
 
         if let data = try? encoder.encode(saveData) {
@@ -339,6 +360,7 @@ class BattleViewModel: ObservableObject {
                 maxPlayerHP = loadedSave.maxPlayerHP
                 maxPlayerMana = loadedSave.maxPlayerMana
                 maxEnemyHP = loadedSave.maxEnemyHP
+                currentArena = loadedSave.currentArena
 
                 enemyHit = false
                 playerHit = false
@@ -377,6 +399,7 @@ class BattleViewModel: ObservableObject {
         maxEnemyHP = 50
         enemy = Enemy(hp: maxEnemyHP , mana: enemyMana , isAlive: true, name: "Murloc")
         enemyAttackDamage = 5
+        currentArena = "Coast"
         player.hp = maxPlayerHP
         player.mana = maxPlayerMana
         player.stage = 1
@@ -392,5 +415,18 @@ class BattleViewModel: ObservableObject {
         addLog("Battle started")
         saveGame()
     }
+    func enemyForStage(_ stage: Int) -> Enemy {
+        switch stage {
+        case 1...3:
+            return Enemy(hp: maxEnemyHP, mana: 20, isAlive: true, name: "Murloc")
+        case 4...6:
+            return Enemy(hp: maxEnemyHP, mana: 25, isAlive: true, name: "Goblin")
+        case 7...9:
+            return Enemy(hp: maxEnemyHP, mana: 30, isAlive: true, name: "Skeleton")
+        default:
+            return Enemy(hp: maxEnemyHP, mana: 40, isAlive: true, name: "Boss")
+        }
+    }
+    
 }
 

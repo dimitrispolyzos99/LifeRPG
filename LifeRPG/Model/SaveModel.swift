@@ -13,4 +13,5 @@ struct SaveData: Codable {
     var maxPlayerHP: Int
     var maxPlayerMana: Int
     var maxEnemyHP: Int
+    var currentArena: String
 }
