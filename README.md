@@ -19,19 +19,12 @@ Select your class, battle enemies, level up, and conquer increasingly difficult 
 
 📸 Screenshots
 
-Character Selection
 
-![Class Selection](Assets/class_selection.jpeg)
-
-
-Battle (Early Game)
-
-![Battle Early](Assets/battle_early.jpeg)
-
-
-Boss Fight
-
-![Boss Fight](Assets/boss_fight.jpeg)
+<p align="center">
+  <img src="Assets/class_selection.jpeg" width="250"/>
+  <img src="Assets/battle_early.jpeg" width="250"/>
+  <img src="Assets/boss_fight.jpeg" width="250"/>
+</p>
 
 
 ---
