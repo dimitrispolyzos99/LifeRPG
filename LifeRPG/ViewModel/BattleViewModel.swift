@@ -16,6 +16,7 @@ class BattleViewModel: ObservableObject {
     @Published var maxEnemyHP = 50
     @Published var currentArena: String
 
+
     private let enemyMana = 10
     private var basicAttackDamage = 10
     private var enemyAttackDamage = 5
@@ -48,12 +49,14 @@ class BattleViewModel: ObservableObject {
     private let victoryRushDamage = 30
     let victoryRushManaCost = 10
     let victoryRushHeal = 10
+    var classColor = "warriorColor"
     
 
     init() {
         let initialClass: PlayerClass = warrior
         
         let initialArena = "Coast"
+       // let initialColor = "paladinColor"
 
         let initialMaxHP: Int
         let initialMaxMana: Int
@@ -129,17 +132,11 @@ class BattleViewModel: ObservableObject {
     @Published var enemyHit = false
     @Published var playerHit = false
     
-    
-
-    
-    
     var isGameOver: Bool {
         player.hp == 0
     }
     
-    
-    
-    private func respawnEnemy(){
+    func respawnEnemy(){
         enemy.isAlive = true
         maxEnemyHP +=  5
         enemyAttackDamage += 2
@@ -408,7 +405,7 @@ class BattleViewModel: ObservableObject {
     func applyClass(_ selectedClass: PlayerClass){
         updateMaxStats(for: selectedClass)
         player = Player(sellectedClass: selectedClass)
-        
+        applyClassColor()
         resetGame()
 
         battleLog = ["New character created"]
@@ -418,13 +415,25 @@ class BattleViewModel: ObservableObject {
     func enemyForStage(_ stage: Int) -> Enemy {
         switch stage {
         case 1...3:
-            return Enemy(hp: maxEnemyHP, mana: 20, isAlive: true, name: "Murloc")
+            return Enemy(hp: maxEnemyHP, mana: enemyMana, isAlive: true, name: "Murloc")
         case 4...6:
-            return Enemy(hp: maxEnemyHP, mana: 25, isAlive: true, name: "Goblin")
+            return Enemy(hp: maxEnemyHP, mana: enemyMana, isAlive: true, name: "Goblin")
         case 7...9:
-            return Enemy(hp: maxEnemyHP, mana: 30, isAlive: true, name: "Skeleton")
+            return Enemy(hp: maxEnemyHP, mana: enemyMana, isAlive: true, name: "Skeleton")
         default:
-            return Enemy(hp: maxEnemyHP, mana: 40, isAlive: true, name: "Boss")
+            return Enemy(hp: maxEnemyHP, mana: enemyMana, isAlive: true, name: "Boss")
+        }
+    }
+    func applyClassColor(){
+        switch player.playerClass {
+        case warrior:
+            classColor = "warriorColor"
+        case rogue:
+            classColor = "rogueColor"
+        case mage:
+            classColor = "mageColor"
+        default:
+            classColor = "paladinColor"
         }
     }
     

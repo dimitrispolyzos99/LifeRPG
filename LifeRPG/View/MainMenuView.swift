@@ -26,6 +26,7 @@ struct MainMenuView: View {
                         }
                         .simultaneousGesture(TapGesture().onEnded {
                             battle.loadGame()
+                            battle.respawnEnemy()
                         })
                         
                         NavigationLink(destination: ClassSelectionView(battle: BattleViewModel())) {

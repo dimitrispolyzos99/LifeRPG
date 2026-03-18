@@ -1,48 +1,46 @@
 //
-//  playerUI.swift
+//  EnemyBarUI.swift
 //  LifeRPG
 //
-//  Created by Dimitris Poluzos on 9/3/26.
+//  Created by Dimitris Poluzos on 18/3/26.
 //
 
 import SwiftUI
 
 
-
-struct PlayerBar : View {
+struct EnemyBar : View {
 
     @ObservedObject var battle: BattleViewModel
+
     
-       
     var body: some View {
         VStack(spacing: 10){
             
-            
-            Text(battle.player.playerClass.name)
+            Text("\(battle.enemy.name)")
                 .font(.headline)
                 .bold()
-            Text("HP \(battle.player.hp)/\(battle.maxPlayerHP)")
+            Text("HP \(battle.enemy.hp)/\(battle.maxEnemyHP)")
                 .font(.caption)
-            ProgressView(value: Double(battle.player.hp), total: Double(battle.maxPlayerHP))
+            ProgressView(value: Double(battle.enemy.hp), total: Double(battle.maxEnemyHP))
                     .tint(.red)
                     .padding()
                     .frame(height: 6)
-            Text("MP \(battle.player.mana)/\(battle.maxPlayerMana)")
+            Text("MP \(battle.enemy.mana)/\(battle.enemy.mana)")
                 .font(.caption)
-            ProgressView(value: Double(battle.player.mana), total: Double(battle.maxPlayerMana))
+            ProgressView(value: Double(battle.enemy.mana), total: 20)
                     .tint(.blue)
                     .padding()
                     .frame(height: 9)
 
         }
-        .background(battle.playerHit ? Color.red.opacity(0.5) : Color.black.opacity(0.2))
+        .background(battle.enemyHit ? Color.red.opacity(0.5) : Color.green.opacity(0.4))
         .background(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .fill(
                     LinearGradient(
                         colors: [
-                            Color("\(battle.classColor)"),
-                            Color(Color.gray.opacity(0.6))
+                            Color(Color.green.opacity(0.4)),
+                            Color(Color.black)
                         ],
                         startPoint: .top,
                         endPoint: .bottom
@@ -51,16 +49,11 @@ struct PlayerBar : View {
         )
         .cornerRadius(16)
         .padding(10)
-        .offset(x: battle.playerHit ? 6 : 0)
-        .animation(.easeInOut(duration: 0.15), value: battle.playerHit)
+        .offset(x: battle.enemyHit ? 6 : 0)
+        .animation(.easeInOut(duration: 0.15), value: battle.enemyHit)
+
+        }
     }
-    
-}
-
-
-
 #Preview {
-    PlayerBar(battle: BattleViewModel())
+    EnemyBar(battle: BattleViewModel())
 }
-
-
