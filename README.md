@@ -21,17 +21,17 @@ Select your class, battle enemies, level up, and conquer increasingly difficult 
 
 Character Selection
 
-
+![Class Selection](Assets/class_selection.jpeg)
 
 
 Battle (Early Game)
 
-
+![Battle Early](Assets/battle_early.jpeg)
 
 
 Boss Fight
 
-
+![Boss Fight](Assets/boss_fight.jpeg)
 
 
 ---
