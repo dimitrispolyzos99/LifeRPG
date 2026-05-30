@@ -14,7 +14,7 @@ struct BattleView: View {
         
         VStack {
             HStack(alignment: .top, spacing: 12){
-                PlayerBar(battle: battle)
+                PlayerBar(viewModel: battle)
                 .frame(maxWidth: .infinity)
                 
                 EnemyBar(battle: battle)
@@ -27,7 +27,7 @@ struct BattleView: View {
                 .foregroundColor(.white)
 
             
-            BattlelogView(battleLog: battle.battleLog)
+            BattlelogView(battleLog: battle.battleLog.battleLog)
             
             BattleField(battle: battle)
             
