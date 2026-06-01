@@ -6,8 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		56A271552FCCB7FD00D9486E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 568F08DF2F5D9DE600C28BD0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 568F08E62F5D9DE600C28BD0;
+			remoteInfo = LifeRPG;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		568F08E72F5D9DE600C28BD0 /* LifeRPG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LifeRPG.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		56A271512FCCB7FC00D9486E /* LifeRPGTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LifeRPGTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -16,10 +27,22 @@
 			path = LifeRPG;
 			sourceTree = "<group>";
 		};
+		56A271522FCCB7FC00D9486E /* LifeRPGTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = LifeRPGTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		568F08E42F5D9DE600C28BD0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		56A2714E2FCCB7FC00D9486E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				568F08E92F5D9DE600C28BD0 /* LifeRPG */,
+				56A271522FCCB7FC00D9486E /* LifeRPGTests */,
 				568F08E82F5D9DE600C28BD0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				568F08E72F5D9DE600C28BD0 /* LifeRPG.app */,
+				56A271512FCCB7FC00D9486E /* LifeRPGTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,6 +95,29 @@
 			productReference = 568F08E72F5D9DE600C28BD0 /* LifeRPG.app */;
 			productType = "com.apple.product-type.application";
 		};
+		56A271502FCCB7FC00D9486E /* LifeRPGTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 56A271592FCCB7FD00D9486E /* Build configuration list for PBXNativeTarget "LifeRPGTests" */;
+			buildPhases = (
+				56A2714D2FCCB7FC00D9486E /* Sources */,
+				56A2714E2FCCB7FC00D9486E /* Frameworks */,
+				56A2714F2FCCB7FC00D9486E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				56A271562FCCB7FD00D9486E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				56A271522FCCB7FC00D9486E /* LifeRPGTests */,
+			);
+			name = LifeRPGTests;
+			packageProductDependencies = (
+			);
+			productName = LifeRPGTests;
+			productReference = 56A271512FCCB7FC00D9486E /* LifeRPGTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -77,11 +125,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2630;
+				LastSwiftUpdateCheck = 2650;
 				LastUpgradeCheck = 2650;
 				TargetAttributes = {
 					568F08E62F5D9DE600C28BD0 = {
 						CreatedOnToolsVersion = 26.3;
+					};
+					56A271502FCCB7FC00D9486E = {
+						CreatedOnToolsVersion = 26.5;
+						TestTargetID = 568F08E62F5D9DE600C28BD0;
 					};
 				};
 			};
@@ -100,12 +152,20 @@
 			projectRoot = "";
 			targets = (
 				568F08E62F5D9DE600C28BD0 /* LifeRPG */,
+				56A271502FCCB7FC00D9486E /* LifeRPGTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		568F08E52F5D9DE600C28BD0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		56A2714F2FCCB7FC00D9486E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +182,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		56A2714D2FCCB7FC00D9486E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		56A271562FCCB7FD00D9486E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 568F08E62F5D9DE600C28BD0 /* LifeRPG */;
+			targetProxy = 56A271552FCCB7FD00D9486E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		568F08F02F5D9DE800C28BD0 /* Debug */ = {
@@ -310,6 +385,50 @@
 			};
 			name = Release;
 		};
+		56A271572FCCB7FD00D9486E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YCBA6PK5AD;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Dimitris-Polyzos.LifeRPGTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LifeRPG.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/LifeRPG";
+			};
+			name = Debug;
+		};
+		56A271582FCCB7FD00D9486E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YCBA6PK5AD;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Dimitris-Polyzos.LifeRPGTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LifeRPG.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/LifeRPG";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -327,6 +446,15 @@
 			buildConfigurations = (
 				568F08F32F5D9DE800C28BD0 /* Debug */,
 				568F08F42F5D9DE800C28BD0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		56A271592FCCB7FD00D9486E /* Build configuration list for PBXNativeTarget "LifeRPGTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				56A271572FCCB7FD00D9486E /* Debug */,
+				56A271582FCCB7FD00D9486E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

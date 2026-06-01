@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Player : Codable {
+struct Player : Codable, Equatable {
 
     var playerClass: PlayerClass
     var hp: Int

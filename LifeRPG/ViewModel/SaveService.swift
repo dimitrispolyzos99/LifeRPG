@@ -12,17 +12,33 @@ protocol SaveService {
     func loadGame() -> SaveData?
 }
 
+protocol KeyValueStore {
+    func set(_ value: Data, forKey key: String)
+    func data(forKey key: String) -> Data?
+}
+
+extension UserDefaults: KeyValueStore {
+    func set(_ value: Data, forKey key: String) {
+        self.set(value as Any?, forKey: key)
+    }
+}
+
 class SaveGameService: SaveService {
     
+    private let store: KeyValueStore
+
+    init(store: KeyValueStore = UserDefaults.standard) {
+        self.store = store
+    }
     
     func saveGame(_ currentSituation: SaveData) {
         let encoder = JSONEncoder()
         if let data = try? encoder.encode(currentSituation) {
-            UserDefaults.standard.set(data, forKey: "saveData")
+            store.set(data, forKey: "saveData")
         }
     }
     func loadGame() -> SaveData? {
-        guard let savedData = UserDefaults.standard.data(forKey: "saveData") else { return nil }
+        guard let savedData = store.data(forKey: "saveData") else { return nil }
         let decoder = JSONDecoder()
         guard let loadedSave = try? decoder.decode(SaveData.self, from: savedData)
         else { return nil }
@@ -30,4 +46,5 @@ class SaveGameService: SaveService {
         return loadedSave
     }
 }
+
 

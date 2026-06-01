@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-
+@MainActor
 class BattleViewModel: ObservableObject {
 
     @Published var maxPlayerHP: Int
@@ -55,9 +55,10 @@ class BattleViewModel: ObservableObject {
     let saveDataService: SaveService
 
     
-    init(battleLog: LogService = BattleLogService(), saveDataService: SaveService = SaveGameService()) {
-        self.battleLog = battleLog
-        self.saveDataService = saveDataService
+    init(battleLog: LogService? = nil, saveDataService: SaveService? = nil) {
+        self.battleLog = battleLog ?? BattleLogService()
+        self.saveDataService = saveDataService ?? SaveGameService()
+        
         
         let initialClass: PlayerClass = warrior
         let initialArena = "Coast"
