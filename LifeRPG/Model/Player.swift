@@ -10,8 +10,10 @@ import Foundation
 struct Player : Codable, Equatable {
 
     var playerClass: PlayerClass
+    var maxHP: Int
     var hp: Int
     var mana: Int
+    var maxMana: Int
     var xp: Int
     var level: Int
     var stage : Int
@@ -19,8 +21,10 @@ struct Player : Codable, Equatable {
 
     init(sellectedClass: PlayerClass) {
         self.playerClass = sellectedClass
+        self.maxHP = sellectedClass.maxHP
         self.hp = playerClass.maxHP
         self.mana = playerClass.maxMana
+        self.maxMana = sellectedClass.maxMana
         self.xp = 0
         self.level = 1
         self.stage = 1

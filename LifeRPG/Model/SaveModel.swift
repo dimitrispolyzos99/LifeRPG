@@ -10,8 +10,6 @@ import Foundation
 struct SaveData: Codable, Equatable {
     var player: Player
     var enemy: Enemy
-    var maxPlayerHP: Int
-    var maxPlayerMana: Int
     var maxEnemyHP: Int
     var currentArena: String
 }

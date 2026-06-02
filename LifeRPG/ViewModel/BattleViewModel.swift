@@ -11,8 +11,7 @@ import Combine
 @MainActor
 class BattleViewModel: ObservableObject {
 
-    @Published var maxPlayerHP: Int
-    @Published var maxPlayerMana: Int
+
     @Published var maxEnemyHP = 50
     @Published var currentArena: String
     @Published var player: Player
@@ -21,7 +20,6 @@ class BattleViewModel: ObservableObject {
     @Published var playerHit = false
 
 
-    private let enemyMana = 10
     private var basicAttackDamage = 10
     private let judgementDamage = 15
     private let holyLightHeal = 15
@@ -31,14 +29,6 @@ class BattleViewModel: ObservableObject {
     let judgementManaCost = 5
     private let levelUpCost = 100
     let holyLightManaCost = 10
-    private let warriorHP = 60
-    private let warriorMana = 10
-    private let mageHP = 40
-    private let mageMana = 60
-    private let paladinHP = 70
-    private let paladinMana = 20
-    private let rogueHP = 40
-    private let rogueMana = 30
     let executeHPCost = 5
     private let executeDamage = 30
     let fireballManaCost = 10
@@ -57,63 +47,25 @@ class BattleViewModel: ObservableObject {
     let battleLog: LogService
     let saveDataService: SaveService
     let enemyService: EnemyService
-
+    let playerStatsService: PlayerStatsService
     
-    init(battleLog: LogService? = nil, saveDataService: SaveService? = nil, enemyService: EnemyService? = nil) {
+    init(battleLog: LogService? = nil, saveDataService: SaveService? = nil, enemyService: EnemyService? = nil, playerStatsService: PlayerStatsService? = nil) {
         self.battleLog = battleLog ?? BattleLogService()
         self.saveDataService = saveDataService ?? SaveGameService()
         self.enemyService = enemyService ?? GameEnemyService()
-        
-        
+        self.playerStatsService = playerStatsService ?? GamePlayerStatsService()
+
         let initialClass: PlayerClass = warrior
         let initialArena = "Coast"
-        let initialMaxHP: Int
-        let initialMaxMana: Int
-        switch initialClass {
-        case warrior:
-            initialMaxHP = warriorHP
-            initialMaxMana = warriorMana
-        case mage:
-            initialMaxHP = mageHP
-            initialMaxMana = mageMana
-        case paladin:
-            initialMaxHP = paladinHP
-            initialMaxMana = paladinMana
-        case rogue:
-            initialMaxHP = rogueHP
-            initialMaxMana = rogueMana
-        default:
-            initialMaxHP = 100
-            initialMaxMana = 40
-        }
         self.currentArena = initialArena
         self.player = Player(sellectedClass: initialClass)
         self.enemy = self.enemyService.spawnEnemy(for: 1)
-        self.maxPlayerHP = initialMaxHP
-        self.maxPlayerMana = initialMaxMana
-        self.player.hp = initialMaxHP
-        self.player.mana = initialMaxMana
     }
 
     
     private func updateMaxStats(for playerClass: PlayerClass) {
-        switch playerClass {
-        case warrior:
-            maxPlayerHP = warriorHP
-            maxPlayerMana = warriorMana
-        case mage:
-            maxPlayerHP = mageHP
-            maxPlayerMana = mageMana
-        case paladin:
-            maxPlayerHP = paladinHP
-            maxPlayerMana = paladinMana
-        case rogue:
-            maxPlayerHP = rogueHP
-            maxPlayerMana = rogueMana
-        default:
-            maxPlayerHP = 100
-            maxPlayerMana = 40
-        }
+        player.maxHP = playerClass.maxHP
+        player.maxMana = playerClass.maxMana
     }
     
     func updateArena(){
@@ -128,9 +80,6 @@ class BattleViewModel: ObservableObject {
             currentArena = "Volcano"
         }
     }
-
-    
-
     
     var isGameOver: Bool {
         player.hp == 0
@@ -143,12 +92,7 @@ class BattleViewModel: ObservableObject {
         battleLog.addLog("\(enemy.name) has appeared")
     }
     private func levelUp() {
-        player.level += 1
-        player.xp = 0
-        maxPlayerHP += 3
-        maxPlayerMana +=  2
-        player.hp = maxPlayerHP
-        player.mana = maxPlayerMana
+        player = playerStatsService.levelUp(player)
         saveGame()
         battleLog.addLog("Congrats you leveled up")
     }
@@ -173,7 +117,7 @@ class BattleViewModel: ObservableObject {
     private func enemyAttack() {
         
         playerHit = true
-        player.mana = min(player.mana + manaRegenPerTurn, maxPlayerMana)
+        player.mana = min(player.mana + manaRegenPerTurn, player.maxMana)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) {
             self.playerHit = false
@@ -278,7 +222,7 @@ class BattleViewModel: ObservableObject {
         if player.mana >= holyLightManaCost{
             player.mana -= holyLightManaCost
             let scaledHolyLightHeal = holyLightHeal + ((player.level - 1) * 2)
-            player.hp = min(player.hp + scaledHolyLightHeal, maxPlayerHP)
+            player.hp = min(player.hp + scaledHolyLightHeal, player.maxHP)
             battleLog.addLog("\(player.playerClass.name) used \(player.playerClass.spellOne) and healed for \(scaledHolyLightHeal) HP")
             enemyAttack()
         }
@@ -331,8 +275,6 @@ class BattleViewModel: ObservableObject {
         let saveData = SaveData(
             player: player,
             enemy: enemy,
-            maxPlayerHP: maxPlayerHP,
-            maxPlayerMana: maxPlayerMana,
             maxEnemyHP: maxEnemyHP,
             currentArena: currentArena
         )
@@ -342,8 +284,8 @@ class BattleViewModel: ObservableObject {
         if let loadedSave = saveDataService.loadGame(){
                 player = loadedSave.player
                 enemy = loadedSave.enemy
-                maxPlayerHP = loadedSave.maxPlayerHP
-                maxPlayerMana = loadedSave.maxPlayerMana
+                player.maxHP = loadedSave.player.maxHP
+                player.maxMana = loadedSave.player.maxMana
                 maxEnemyHP = loadedSave.maxEnemyHP
                 currentArena = loadedSave.currentArena
                 
@@ -363,14 +305,14 @@ class BattleViewModel: ObservableObject {
 
     
     func usePotion() {
-        player.hp = min(player.hp + potionHeal, maxPlayerHP)
+        player.hp = min(player.hp + potionHeal, player.maxHP)
         battleLog.addLog("\(player.playerClass.name) used Health Potion")
         enemyAttack()
     }
     func restartBattle(){
         enemy.hp = maxEnemyHP
-        player.hp = maxPlayerHP
-        player.mana = maxPlayerMana
+        player.hp = player.maxHP
+        player.mana = player.maxMana
         enemy.isAlive = true
         enemyHit = false
         playerHit = false
@@ -379,8 +321,8 @@ class BattleViewModel: ObservableObject {
     func resetGame() {
         player.stage = 1
         respawnEnemy()
-        player.hp = maxPlayerHP
-        player.mana = maxPlayerMana
+        player.hp = player.maxHP
+        player.mana = player.maxMana
     }
     func applyClass(_ selectedClass: PlayerClass){
         updateMaxStats(for: selectedClass)
