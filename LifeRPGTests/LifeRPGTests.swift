@@ -32,7 +32,7 @@ struct LifeRPGTests {
         var player = Player(sellectedClass: warrior)
         player.level = 7
         player.stage = 3
-        let enemy = Enemy(hp: 42, mana: 10, isAlive: true, name: "Goblin")
+        let enemy = Enemy(hp: 42, mana: 10, isAlive: true, name: "Murloc", attackDamage: 5)
 
         let original = SaveData(
             player: player,
@@ -60,5 +60,38 @@ struct LifeRPGTests {
 
         // THEN: δεν υπάρχει τίποτα — nil
         #expect(loaded == nil)
+    }
+    
+    @Test func spawnEnemy_atStage1_isMurloc() async throws {
+        let service = GameEnemyService()
+        let enemy = service.spawnEnemy(for: 1)
+        #expect(enemy.name == "Murloc")
+    }
+    
+    @Test func spawnEnemy_atStage4_isGoblin() async throws {
+        let service = GameEnemyService()
+        let enemy = service.spawnEnemy(for: 4)
+        #expect(enemy.name == "Goblin")
+    }
+    @Test func enemyHpAtStage4() async throws {
+        let service = GameEnemyService()
+        let enemy = service.spawnEnemy(for: 4)
+        #expect(enemy.hp == 65)
+    }
+    @Test func enemyDamageAtStage8() async throws {
+        let service = GameEnemyService()
+        let enemy = service.spawnEnemy(for: 8)
+        #expect(enemy.attackDamage == 19)
+    }
+    @Test func spawnEnemy_atStage8_isSkeleton() async throws {
+        let service = GameEnemyService()
+        let enemy = service.spawnEnemy(for: 8)
+        #expect(enemy.name == "Skeleton")
+    }
+    
+    @Test func spawnEnemy_atStage10_isBoss() async throws {
+        let service = GameEnemyService()
+        let enemy = service.spawnEnemy(for: 10)
+        #expect(enemy.name == "Boss")
     }
 }

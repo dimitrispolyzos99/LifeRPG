@@ -12,6 +12,6 @@ struct Enemy : Codable, Equatable  {
     var mana: Int
     var isAlive: Bool
     var name : String
-    
+    var attackDamage: Int
 }
 

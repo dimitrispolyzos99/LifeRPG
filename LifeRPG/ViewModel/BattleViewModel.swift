@@ -15,11 +15,14 @@ class BattleViewModel: ObservableObject {
     @Published var maxPlayerMana: Int
     @Published var maxEnemyHP = 50
     @Published var currentArena: String
+    @Published var player: Player
+    @Published var enemy: Enemy
+    @Published var enemyHit = false
+    @Published var playerHit = false
 
 
     private let enemyMana = 10
     private var basicAttackDamage = 10
-    private var enemyAttackDamage = 5
     private let judgementDamage = 15
     private let holyLightHeal = 15
     private let potionHeal = 10
@@ -53,11 +56,13 @@ class BattleViewModel: ObservableObject {
    
     let battleLog: LogService
     let saveDataService: SaveService
+    let enemyService: EnemyService
 
     
-    init(battleLog: LogService? = nil, saveDataService: SaveService? = nil) {
+    init(battleLog: LogService? = nil, saveDataService: SaveService? = nil, enemyService: EnemyService? = nil) {
         self.battleLog = battleLog ?? BattleLogService()
         self.saveDataService = saveDataService ?? SaveGameService()
+        self.enemyService = enemyService ?? GameEnemyService()
         
         
         let initialClass: PlayerClass = warrior
@@ -83,6 +88,7 @@ class BattleViewModel: ObservableObject {
         }
         self.currentArena = initialArena
         self.player = Player(sellectedClass: initialClass)
+        self.enemy = self.enemyService.spawnEnemy(for: 1)
         self.maxPlayerHP = initialMaxHP
         self.maxPlayerMana = initialMaxMana
         self.player.hp = initialMaxHP
@@ -124,29 +130,17 @@ class BattleViewModel: ObservableObject {
     }
 
     
-    @Published var player: Player
-    @Published var enemy = Enemy(
-        hp: 50,
-        mana: 20,
-        isAlive: true,
-        name: "Murloc"
-    )
-    @Published var enemyHit = false
-    @Published var playerHit = false
+
     
     var isGameOver: Bool {
         player.hp == 0
     }
     
     func respawnEnemy(){
-        enemy.isAlive = true
-        maxEnemyHP +=  5
-        enemyAttackDamage += 2
-        enemy.hp = maxEnemyHP
-        enemy = enemyForStage(player.stage)
-        updateArena()
+        enemy = enemyService.spawnEnemy(for: player.stage)
         maxEnemyHP = enemy.hp
-        battleLog.addLog("A new \(enemy.name) appears")
+        updateArena()
+        battleLog.addLog("\(enemy.name) has appeared")
     }
     private func levelUp() {
         player.level += 1
@@ -184,14 +178,14 @@ class BattleViewModel: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) {
             self.playerHit = false
         }
-        player.hp = max(player.hp - enemyAttackDamage, 0)
+        player.hp = max(player.hp - enemy.attackDamage, 0)
         if player.hp == 0{
             battleLog.addLog("\(player.playerClass.name) was defeated")
         } else {
-            battleLog.addLog("\(enemy.name) attacked \(player.playerClass.name) for \(enemyAttackDamage) dmg")
+            battleLog.addLog("\(enemy.name) attacked \(player.playerClass.name) for \(enemy.attackDamage) dmg")
         }
     }
-    private func murlocTakesDamage() {
+    private func enemyTakesDamage() {
         enemyHit = true
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) {
@@ -208,7 +202,7 @@ class BattleViewModel: ObservableObject {
             enemy.hp -= scaledVictoryRushDamage
             player.hp += scaledVictoryRushHeal
             battleLog.addLog("\(player.playerClass.name) used \(player.playerClass.spellTwo) on \(enemy.name) and healed for \(scaledVictoryRushHeal) hp")
-            murlocTakesDamage()
+            enemyTakesDamage()
             resolveEnemyTurn()
         }
         else {
@@ -221,7 +215,7 @@ class BattleViewModel: ObservableObject {
             let scaledAssassinateDamage = assassinateDamage + ((player.level - 1) * 3)
             enemy.hp -= scaledAssassinateDamage
             battleLog.addLog("\(player.playerClass.name) used \(player.playerClass.spellTwo) and backstabed \(enemy.name) and did \(scaledAssassinateDamage) damage")
-            murlocTakesDamage()
+            enemyTakesDamage()
             resolveEnemyTurn()
         }
         else {
@@ -234,7 +228,7 @@ class BattleViewModel: ObservableObject {
             let scaledGarroteDamage = garroteDamage + ((player.level - 1) * 2)
             enemy.hp -= scaledGarroteDamage
             battleLog.addLog("\(player.playerClass.name) used \(player.playerClass.spellOne) and backstabed \(enemy.name) and did \(scaledGarroteDamage)")
-            murlocTakesDamage()
+            enemyTakesDamage()
             resolveEnemyTurn()
         }
         else {
@@ -247,7 +241,7 @@ class BattleViewModel: ObservableObject {
             let scaledFireballDamage = fireballDamage + ((player.level - 1) * 2)
             enemy.hp -= scaledFireballDamage
             battleLog.addLog("\(player.playerClass.name) casted \(player.playerClass.spellOne) on \(enemy.name) and did \(scaledFireballDamage)")
-            murlocTakesDamage()
+            enemyTakesDamage()
             resolveEnemyTurn()
         }
         else {
@@ -260,7 +254,7 @@ class BattleViewModel: ObservableObject {
             let scaledFrostballDamage = frostballDamage + ((player.level - 1) * 3)
             enemy.hp -= scaledFrostballDamage
             battleLog.addLog("\(player.playerClass.name) casted \(player.playerClass.spellTwo) on \(enemy.name) and did \(scaledFrostballDamage)")
-            murlocTakesDamage()
+            enemyTakesDamage()
             resolveEnemyTurn()
         }
         else {
@@ -271,9 +265,9 @@ class BattleViewModel: ObservableObject {
         if player.hp >= executeHPCost{
             player.hp -= executeHPCost
             let scaledExecuteDamage = executeDamage + ((player.level - 1) * 2)
-            enemy.hp -= executeDamage
+            enemy.hp -= scaledExecuteDamage
             battleLog.addLog("\(player.playerClass.name) sucrificed \(executeHPCost) HP and used \(player.playerClass.spellOne) on \(enemy.name) for \(scaledExecuteDamage) damage")
-            murlocTakesDamage()
+            enemyTakesDamage()
             resolveEnemyTurn()
         }
         else {
@@ -298,7 +292,7 @@ class BattleViewModel: ObservableObject {
             let scaledJudgementDamage = judgementDamage + ((player.level - 1) * 2)
             enemy.hp -= scaledJudgementDamage
             battleLog.addLog("\(player.playerClass.name) used \(player.playerClass.spellOne) on \(enemy.name) and did \(scaledJudgementDamage) damage")
-            murlocTakesDamage()
+            enemyTakesDamage()
             resolveEnemyTurn()
         }
         else {
@@ -360,8 +354,8 @@ class BattleViewModel: ObservableObject {
         }
     
     
-    func attackMurloc(){
-            murlocTakesDamage()
+    func attackEnemy(){
+            enemyTakesDamage()
             enemy.hp -= basicAttackDamage
         battleLog.addLog("\(player.playerClass.name) attacks \(enemy.name) for \(basicAttackDamage) dmg")
             resolveEnemyTurn()
@@ -383,14 +377,10 @@ class BattleViewModel: ObservableObject {
         battleLog.addLog("Battle restarted")
     }
     func resetGame() {
-        maxEnemyHP = 50
-        enemy = Enemy(hp: maxEnemyHP , mana: enemyMana , isAlive: true, name: "Murloc")
-        enemyAttackDamage = 5
-        currentArena = "Coast"
+        player.stage = 1
+        respawnEnemy()
         player.hp = maxPlayerHP
         player.mana = maxPlayerMana
-        player.stage = 1
-
     }
     func applyClass(_ selectedClass: PlayerClass){
         updateMaxStats(for: selectedClass)
@@ -402,18 +392,7 @@ class BattleViewModel: ObservableObject {
         battleLog.addLog("Battle started")
         saveGame()
     }
-    func enemyForStage(_ stage: Int) -> Enemy {
-        switch stage {
-        case 1...3:
-            return Enemy(hp: maxEnemyHP, mana: enemyMana, isAlive: true, name: "Murloc")
-        case 4...6:
-            return Enemy(hp: maxEnemyHP, mana: enemyMana, isAlive: true, name: "Goblin")
-        case 7...9:
-            return Enemy(hp: maxEnemyHP, mana: enemyMana, isAlive: true, name: "Skeleton")
-        default:
-            return Enemy(hp: maxEnemyHP, mana: enemyMana, isAlive: true, name: "Boss")
-        }
-    }
+
     func applyClassColor(){
         switch player.playerClass {
         case warrior:

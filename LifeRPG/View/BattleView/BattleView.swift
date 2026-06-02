@@ -34,7 +34,7 @@ struct BattleView: View {
             Spacer()
             
             ActionBar(
-                onAttack: battle.attackMurloc,
+                onAttack: battle.attackEnemy,
                 onPotion: battle.usePotion,
                 onJudgement: battle.judgement,
                 onHolyLight: battle.holyLight,
