@@ -89,9 +89,19 @@ struct LifeRPGTests {
         #expect(enemy.name == "Skeleton")
     }
     
-    @Test func spawnEnemy_atStage10_isBoss() async throws {
+    @Test func spawnEnemyAtStage10IsBoss() async throws {
         let service = GameEnemyService()
         let enemy = service.spawnEnemy(for: 10)
         #expect(enemy.name == "Boss")
+    }
+    @Test func addLogTest() async throws {
+        let service = BattleLogService()
+        service.addLog("Test Message")
+        #expect(service.battleLog.contains("Test Message"))
+    }
+    @Test func logCapp() async throws {
+        let service = BattleLogService()
+        for i in 1...30 { service.addLog("message \(i)") }
+        #expect(service.battleLog.count == 20)
     }
 }
