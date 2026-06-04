@@ -2,7 +2,7 @@
 //  SaveModel.swift
 //  LifeRPG
 //
-//  Created by Dimitris Poluzos on 17/3/26.
+//  Created by Dimitris Polyzos on 17/3/26.
 //
 
 import Foundation

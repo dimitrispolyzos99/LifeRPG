@@ -2,7 +2,7 @@
 //  PlayerStatsService.swift
 //  LifeRPG
 //
-//  Created by Dimitris Poluzos on 2/6/26.
+//  Created by Dimitris Polyzos on 2/6/26.
 //
 
 import Foundation

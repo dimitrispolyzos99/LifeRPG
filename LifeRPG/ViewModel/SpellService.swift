@@ -2,7 +2,7 @@
 //  SpellService.swift
 //  LifeRPG
 //
-//  Created by Dimitris Poluzos on 3/6/26.
+//  Created by Dimitris Polyzos on 3/6/26.
 //
 
 import Foundation

@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  LifeRPG
 //
-//  Created by Dimitris Poluzos on 8/3/26.
+//  Created by Dimitris Polyzos on 8/3/26.
 //
 
 import SwiftUI

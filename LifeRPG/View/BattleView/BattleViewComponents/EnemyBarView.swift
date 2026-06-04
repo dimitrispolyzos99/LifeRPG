@@ -2,7 +2,7 @@
 //  EnemyBarUI.swift
 //  LifeRPG
 //
-//  Created by Dimitris Poluzos on 18/3/26.
+//  Created by Dimitris Polyzos on 18/3/26.
 //
 
 import SwiftUI

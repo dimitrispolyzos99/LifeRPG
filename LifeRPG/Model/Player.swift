@@ -2,7 +2,7 @@
 //  Model.swift
 //  LifeRPG
 //
-//  Created by Dimitris Poluzos on 12/3/26.
+//  Created by Dimitris Polyzos on 12/3/26.
 //
 
 import Foundation
@@ -19,12 +19,12 @@ struct Player : Codable, Equatable {
     var stage : Int
 
 
-    init(sellectedClass: PlayerClass) {
-        self.playerClass = sellectedClass
-        self.maxHP = sellectedClass.maxHP
+    init(selectedClass: PlayerClass) {
+        self.playerClass = selectedClass
+        self.maxHP = selectedClass.maxHP
         self.hp = playerClass.maxHP
         self.mana = playerClass.maxMana
-        self.maxMana = sellectedClass.maxMana
+        self.maxMana = selectedClass.maxMana
         self.xp = 0
         self.level = 1
         self.stage = 1

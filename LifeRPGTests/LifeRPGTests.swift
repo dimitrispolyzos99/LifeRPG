@@ -26,7 +26,7 @@ struct LifeRPGTests {
 
     @Test func saveThenLoad_returnsSameData() async throws {
         let service = SaveGameService(store: InMemoryStore())
-        var player = Player(sellectedClass: warrior)
+        var player = Player(selectedClass: warrior)
         player.level = 7
         player.stage = 3
         let enemy = Enemy(hp: 42, mana: 10, isAlive: true, name: "Murloc", attackDamage: 5)
@@ -98,7 +98,7 @@ struct LifeRPGTests {
     
     @Test func levelUpTest() async throws {
         let service = GamePlayerStatsService()
-        let testPlayer = Player(sellectedClass: warrior)
+        let testPlayer = Player(selectedClass: warrior)
         let leveled = service.levelUp(testPlayer)
         #expect(leveled.level == 2)
         #expect(leveled.maxHP == testPlayer.maxHP + 3)
@@ -107,7 +107,7 @@ struct LifeRPGTests {
     
     @Test func spellDamageTest() async throws {
         let service = GameSpellService()
-        var player = Player(sellectedClass: mage)
+        var player = Player(selectedClass: mage)
         var enemy = Enemy(hp: 100, mana: 10, isAlive: true, name: "Test", attackDamage: 5)
         service.cast(fireballSpell, player: &player, enemy: &enemy)
         #expect(enemy.hp == 60)
@@ -115,7 +115,7 @@ struct LifeRPGTests {
     
     @Test func spellManaTest() async throws {
         let service = GameSpellService()
-        var player = Player(sellectedClass: mage)
+        var player = Player(selectedClass: mage)
         var enemy = Enemy(hp: 100, mana: 10, isAlive: true, name: "Test", attackDamage: 5)
         service.cast(fireballSpell, player: &player, enemy: &enemy)
         #expect(player.mana == player.playerClass.maxMana - fireballSpell.manaCost)
@@ -123,7 +123,7 @@ struct LifeRPGTests {
     
     @Test func spellHealTest() async throws {
         let service = GameSpellService()
-        var player = Player(sellectedClass: paladin)
+        var player = Player(selectedClass: paladin)
         player.hp = 10
         let hpBefore = player.hp
         var enemy = Enemy(hp: 100, mana: 10, isAlive: true, name: "Test", attackDamage: 5)
@@ -133,7 +133,7 @@ struct LifeRPGTests {
     
     @Test func overhealTest() async throws {
         let service = GameSpellService()
-        var player = Player(sellectedClass: paladin)
+        var player = Player(selectedClass: paladin)
         player.hp = 60
         var enemy = Enemy(hp: 100, mana: 10, isAlive: true, name: "Test", attackDamage: 5)
         service.cast(holyLightSpell, player: &player, enemy: &enemy)

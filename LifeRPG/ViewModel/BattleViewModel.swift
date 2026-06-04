@@ -2,7 +2,7 @@
 //  BattleViewModel.swift
 //  LifeRPG
 //
-//  Created by Dimitris Poluzos on 11/3/26.
+//  Created by Dimitris Polyzos on 11/3/26.
 //
 
 import Foundation
@@ -43,7 +43,7 @@ class BattleViewModel: ObservableObject {
         let initialClass: PlayerClass = warrior
         let initialArena = "Coast"
         self.currentArena = initialArena
-        self.player = Player(sellectedClass: initialClass)
+        self.player = Player(selectedClass: initialClass)
         self.enemy = self.enemyService.spawnEnemy(for: 1)
     }
 
@@ -173,7 +173,7 @@ class BattleViewModel: ObservableObject {
         player.mana = player.maxMana
     }
     func applyClass(_ selectedClass: PlayerClass){
-        player = Player(sellectedClass: selectedClass)
+        player = Player(selectedClass: selectedClass)
         applyClassColor()
         resetGame()
 
