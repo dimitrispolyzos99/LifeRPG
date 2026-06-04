@@ -11,8 +11,6 @@ import SwiftUI
 struct ActionBar : View {
     let onAttack: () -> Void
     let onPotion: () -> Void
-    let onJudgement: () -> Void
-    let onHolyLight: () -> Void
     
     @ObservedObject var battle: BattleViewModel
     
@@ -22,34 +20,14 @@ struct ActionBar : View {
     private var isPotionDisabled: Bool {
         battle.player.hp == 0
     }
-    private var isHolyLightDisabled: Bool {
-        battle.player.mana < 10 || battle.player.hp == 0
-    }
     private var isSpellOneDisabled: Bool {
-        switch battle.player.playerClass{
-        case warrior :
-            battle.player.hp < battle.executeHPCost
-        case rogue :
-            battle.player.mana < battle.garroteManaCost || battle.player.hp == 0
-        case mage :
-            battle.player.mana < battle.fireballManaCost || battle.player.hp == 0
-        case paladin :
-            battle.player.mana < battle.judgementManaCost || battle.player.hp == 0
-        default : true
-        }
+        battle.player.mana < battle.player.playerClass.spellOne.manaCost
+        || battle.player.hp <= battle.player.playerClass.spellOne.hpCost
     }
+
     private var isSpellTwoDisabled: Bool {
-        switch battle.player.playerClass{
-        case warrior :
-            battle.player.mana < battle.victoryRushManaCost || battle.player.hp == 0
-        case rogue :
-            battle.player.mana < battle.assassinateManaCost || battle.player.hp == 0
-        case mage :
-            battle.player.mana < battle.frostballManaCost || battle.player.hp == 0
-        case paladin :
-            battle.player.mana < battle.holyLightManaCost || battle.player.hp == 0
-        default : true
-        }
+        battle.player.mana < battle.player.playerClass.spellTwo.manaCost
+        || battle.player.hp <= battle.player.playerClass.spellTwo.hpCost
     }
     
     var body: some View {
@@ -70,15 +48,15 @@ struct ActionBar : View {
                 .disabled(isAttackDisabled)
             }
             HStack(spacing: 12){
-                ActionButton(title:"\(battle.player.playerClass.spellOne)"){
-                    battle.spellOne()
+                ActionButton(title:"\(battle.player.playerClass.spellOne.name)"){
+                    battle.castSpell(battle.player.playerClass.spellOne)
                 }
                 .frame(maxWidth: .infinity)
                 .disabled(isSpellOneDisabled)
 
                 
-                ActionButton(title:"\(battle.player.playerClass.spellTwo)"){
-                    battle.spellTwo()
+                ActionButton(title:"\(battle.player.playerClass.spellTwo.name)"){
+                    battle.castSpell(battle.player.playerClass.spellTwo)
                 }
                 .frame(maxWidth: .infinity)
                 .disabled(isSpellTwoDisabled)
@@ -106,7 +84,6 @@ struct ActionBar : View {
     }
 }
 
-
 #Preview {
-    ActionBar(onAttack: {}, onPotion: {}, onJudgement: {}, onHolyLight: {}, battle: BattleViewModel())
+    ActionBar(onAttack: {}, onPotion: {}, battle: BattleViewModel())
 }

@@ -36,8 +36,6 @@ struct BattleView: View {
             ActionBar(
                 onAttack: battle.attackEnemy,
                 onPotion: battle.usePotion,
-                onJudgement: battle.judgement,
-                onHolyLight: battle.holyLight,
                 battle: battle
             )
             if battle.isGameOver{

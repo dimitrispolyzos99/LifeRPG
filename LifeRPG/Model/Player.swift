@@ -36,38 +36,38 @@ struct PlayerClass : Equatable, Codable {
     let name: String
     let maxHP: Int
     let maxMana: Int
-    var spellOne: String
-    var spellTwo: String
+    var spellOne: Spell
+    var spellTwo: Spell
 }
 
 let paladin = PlayerClass(
     name: "Paladin",
     maxHP: 70,
     maxMana: 20,
-    spellOne: "Judgement",
-    spellTwo: "Holy Light",
+    spellOne: judgementSpell,
+    spellTwo: holyLightSpell,
 )
 
 let mage = PlayerClass(
     name: "Mage",
     maxHP: 50,
     maxMana: 40,
-    spellOne: "Fireball",
-    spellTwo: "Frostbolt"
+    spellOne: fireballSpell,
+    spellTwo: frostballSpell
 )
 
 let rogue = PlayerClass(
     name: "Rogue",
     maxHP: 60,
     maxMana: 25,
-    spellOne: "Garote",
-    spellTwo: "Assassinate"
+    spellOne: garroteSpell,
+    spellTwo: assassinateSpell
 )
 
 let warrior = PlayerClass(
     name: "Warrior",
     maxHP: 60,
     maxMana: 10,
-    spellOne: "Execute",
-    spellTwo: "Victory Rush"
+    spellOne: executeSpell,
+    spellTwo: victoryRushSpell
 )
